@@ -25,9 +25,15 @@ var titleComponent = {
   _text: function() {
     editCanvas.letterSpacing = 2;
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-    ctx.font = '30px sans-serif';
+    ctx.font = '30px open sans';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
+
+    // Set shadow properties
+    ctx.shadowColor = 'black';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
 
     function wrapText(context, text, x, y, maxWidth, lineHeight) {
       var words = text.split(' ');
@@ -48,6 +54,12 @@ var titleComponent = {
       context.fillText(line, x, y);
     }
     wrapText(ctx, this.properties.text(), 255, 326, 450, 35);
+
+    // Reset shadow properties
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
   }
 }
 
@@ -75,8 +87,15 @@ var categoryComponent = {
     ctx.rotate(-0.5 * Math.PI);
     editCanvas.style.letterSpacing = 4;
     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.font = '48px sans-serif';
+    ctx.font = '48px open sans';
     ctx.textAlign = "center";
+    
+    // Set shadow properties
+    ctx.shadowColor = 'black';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
+    
     ctx.fillText(this.properties.text(), 0, 0);
     ctx.restore();
   }
@@ -121,7 +140,6 @@ var backgroundComponent = {
 }
 
 // Logo
-
 var logoComponent = {
   properties: {
     domId: "#logo",
@@ -130,7 +148,6 @@ var logoComponent = {
     this._addImage();
   },
   _addImage: function() {
-
     var file = document.querySelector(this.properties.domId).files[0];
     var background = new Image();
     background.crossOrigin = "Anonymous";
@@ -139,8 +156,20 @@ var logoComponent = {
     background.onload = function() {
       sourceHeight = background.height;
       sourceWidth = background.width;
-      ctx.drawImage(background, 0, 0, sourceWidth, sourceHeight,
-        5, 5, 145, 145);
+
+      // Set shadow properties
+      ctx.shadowColor = 'black';
+      ctx.shadowBlur = 5;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 3;
+
+      ctx.drawImage(background, 0, 0, sourceWidth, sourceHeight, 5, 5, 145, 145);
+
+      // Reset shadow properties
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
     }
 
     if (file) {
@@ -156,6 +185,7 @@ var logoComponent = {
     }
   }
 }
+
 
 // main function to draw / redraw canvas
 function draw() {
