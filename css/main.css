@@ -37,7 +37,7 @@ h2:first-of-type {
 }
 
 nav {
-  background-color: #26a69a;
+  background-color: #00c7b2;
   overflow: hidden;
 }
 
@@ -47,4 +47,12 @@ nav {
 
 .input-field {
   margin: 4px 0 4px 0;
+}
+
+.btn {
+  background-color: #00c7b2;
+}
+
+input {
+  font-family: "Open Sans" !important;
 }
