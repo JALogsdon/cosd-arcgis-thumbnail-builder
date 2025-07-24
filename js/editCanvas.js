@@ -120,14 +120,41 @@ var backgroundComponent = {
     background.crossOrigin = "Anonymous";
     var reader = new FileReader();
 
-    background.onload = function() {
-      sourceHeight = background.height;
-      sourceWidth = background.width;
-      ctx.globalCompositeOperation = 'destination-over';
-      ctx.drawImage(background, 0, 0, sourceWidth, sourceHeight,
-        0, 0, 600, 400);
-      ctx.globalCompositeOperation = 'source-over';
-    }
+    background.onload = function () {
+      const aspectTarget = 1.5;
+      const srcWidth = background.width;
+      const srcHeight = background.height;
+      const srcAspect = srcWidth / srcHeight;
+
+      let cropWidth = srcWidth;
+      let cropHeight = srcHeight;
+      let cropX = 0;
+      let cropY = 0;
+
+      if (srcAspect > aspectTarget) {
+        // Image is too wide — crop sides
+        cropWidth = srcHeight * aspectTarget;
+        cropX = (srcWidth - cropWidth) / 2;
+      } else if (srcAspect < aspectTarget) {
+        // Image is too tall — crop top/bottom
+        cropHeight = srcWidth / aspectTarget;
+        cropY = (srcHeight - cropHeight) / 2;
+      }
+
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.drawImage(
+        background,
+        cropX,
+        cropY,
+        cropWidth,
+        cropHeight,
+        0,
+        0,
+        600,
+        400
+      );
+      ctx.globalCompositeOperation = "source-over";
+    };
 
     if (file) {
       reader.addEventListener("load", function() {
