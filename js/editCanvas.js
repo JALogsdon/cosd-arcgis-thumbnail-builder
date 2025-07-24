@@ -66,40 +66,44 @@ var titleComponent = {
 // Category and Category Background
 var categoryComponent = {
   properties: {
-    text: function() {
-      return document.querySelector('#category').value;
+    text: function () {
+      const selected = document.querySelector("#category").value;
+      if (selected === "__custom__") {
+        return document.querySelector("#custom-category").value || "";
+      }
+      return selected;
     },
-    bgColor: function() {
-      return $("#category-color").colorpicker('getValue');
-    }
+    bgColor: function () {
+      return $("#category-color").colorpicker("getValue");
+    },
   },
-  draw: function() {
+  draw: function () {
     this._bg();
     this._text();
   },
-  _bg: function() {
+  _bg: function () {
     ctx.fillStyle = this.properties.bgColor();
     ctx.fillRect(500, 0, 150, 400);
   },
-  _text: function() {
+  _text: function () {
     ctx.save();
     ctx.translate(524, 200);
     ctx.rotate(-0.5 * Math.PI);
     editCanvas.style.letterSpacing = 4;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.font = '48px open sans';
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.font = "48px open sans";
     ctx.textAlign = "center";
-    
+
     // Set shadow properties
-    ctx.shadowColor = 'black';
+    ctx.shadowColor = "black";
     ctx.shadowBlur = 10;
     ctx.shadowOffsetX = 3;
     ctx.shadowOffsetY = 3;
-    
+
     ctx.fillText(this.properties.text(), 0, 0);
     ctx.restore();
-  }
-}
+  },
+};
 
 // Background Image
 var backgroundComponent = {
@@ -212,6 +216,23 @@ document.addEventListener('DOMContentLoaded', function() {
   // Update Events
   document.querySelector('#title').addEventListener('keyup', draw);
   document.querySelector('#category').addEventListener('change', draw);
+  const select = document.getElementById("category");
+  const customWrapper = document.getElementById("custom-category-wrapper");
+  const customInput = document.getElementById("custom-category");
+
+  select.addEventListener("change", function () {
+    if (this.value === "__custom__") {
+      customWrapper.style.display = "block";
+    } else {
+      customWrapper.style.display = "none";
+      draw();
+    }
+  });
+
+  customInput.addEventListener("input", function () {
+    draw();
+  });
+
   document.querySelector('#background')
     .addEventListener('change', draw);
   document.querySelector('#logo')
@@ -229,13 +250,20 @@ document.addEventListener('DOMContentLoaded', function() {
   if (getUrlParameter('title')) {
     $("#title").val(getUrlParameter('title'))
   }
-  if (getUrlParameter('category')) {
-    $("#category option").each(function(i, opt) {
-      if ($(opt).val().toLowerCase() == getUrlParameter('category').toLowerCase()) {
-        $(opt).attr('selected', true)
-      }
-    })
+  if (getUrlParameter("category")) {
+    const value = getUrlParameter("category");
+    const match = Array.from(document.querySelector("#category").options).find(
+      (opt) => opt.value.toLowerCase() === value.toLowerCase()
+    );
+    if (match) {
+      match.selected = true;
+    } else {
+      document.querySelector("#category").value = "Web Map";
+      customWrapper.style.display = "block";
+      customInput.value = value;
+    }
   }
+
   if (getUrlParameter('background')) {
     $("#background-url").val(getUrlParameter('background'));
   }

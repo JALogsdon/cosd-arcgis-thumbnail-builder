@@ -59,7 +59,7 @@
           <h2>Title</h2>
           <div class="input-field col s12">
             <input placeholder="Item Title" type="text" id="title" name="title" />
-            <label for="title">Item Title</label>
+            <label for="title"></label>
           </div>
         </div>
 
@@ -67,17 +67,29 @@
           <h2>Sidebar</h2>
           <div class="input-field col s12">
             <select name="category" id="category">
-            <option value="Dashboard">Dashboard</option>
-            <option value="Document">Document</option>
-            <option value="Feature Layer">Feature Layer</option>
-            <option value="Map Image">Map Image</option>
-            <option value="Mobile App">Mobile App</option>
-            <option value="Project Template">Project Template</option>
-            <option value="StoryMap">StoryMap</option>
-            <option value="Table">Table</option>
-            <option value="Web App">Web App</option>
-            <option value="Web Map">Web Map</option>
-          </select>
+              <option value="Dashboard">Dashboard</option>
+              <option value="Feature Layer">Feature Layer</option>
+              <option value="Field App">Field App</option>
+              <option value="File">File</option>
+              <option value="Form">Form</option>
+              <option value="Image">Image</option>
+              <option value="Imagery Layer">Imagery Layer</option>
+              <option value="Notebook">Notebook</option>
+              <option value="Project Template">Project Template</option>
+              <option value="StoryMap">StoryMap</option>
+              <option value="Survey">Survey</option>
+              <option value="Table">Table</option>
+              <option value="Tile Layer">Tile Layer</option>
+              <option value="Web App">Web App</option>
+              <option value="Web Map">Web Map</option>
+              <option value="__custom__">Other...</option>
+            </select>
+            <label for="category"></label>
+          </div>
+
+          <!-- Hidden text input for custom category -->
+          <div class="input-field col s12" id="custom-category-wrapper" style="display: none;">
+            <input type="text" id="custom-category" placeholder="Enter custom category">
           </div>
         </div>
 
