@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Open index.html (Edge)",
+      "file": "${workspaceFolder}/index.html"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Open index.html (Chrome)",
+      "file": "${workspaceFolder}/index.html"
+    }
+  ]
+}
