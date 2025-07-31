@@ -37,7 +37,15 @@
       <div class="row">
         <div class="col m6 s12">
           <div class="row">
-            <canvas id="edit-canvas"></canvas>
+            <!-- Accessible thumbnail preview -->
+            <canvas
+              id="edit-canvas"
+              role="img"
+              aria-label="Live preview of your thumbnail (600 x 400 pixels)"
+            >
+              <!-- Fallback text for very old browsers or non-visual agents -->
+              Live preview of your thumbnail (600 x 400 pixels)
+            </canvas>
           </div>
 
           <div class="row">
