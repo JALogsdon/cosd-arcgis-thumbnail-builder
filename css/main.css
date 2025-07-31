@@ -48,6 +48,15 @@ nav {
   background-color: #0098db;
 }
 
+/* Visible focus outline for keyboard users */
+.btn:focus,
+a:focus,
+input:focus,
+select:focus {
+  outline: 2px solid #000; /* meets 3:1 contrast */
+  outline-offset: 2px; /* moves outline away from element edge */
+}
+
 /* Utility: hide text visually while keeping it accessible */
 .visually-hidden {
   position: absolute !important;
