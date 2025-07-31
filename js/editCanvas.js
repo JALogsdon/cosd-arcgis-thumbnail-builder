@@ -261,7 +261,11 @@ function draw() {
   backgroundComponent.draw();
   logoComponent.draw();
 
-  //Store to local storage.. next
+  // ------- announce update for assistive tech -------
+  document.getElementById("canvas-status").textContent =
+    "Thumbnail updated " + new Date().toLocaleTimeString();
+
+  //Store to local storage. next
 }
 
 document.addEventListener("DOMContentLoaded", function () {
