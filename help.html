@@ -47,22 +47,14 @@
             target="_blank"
             rel="noopener"
           >
-            https://www.sandiego.gov/communications/design</a
-          >.
+            sandiego.gov/communications/design</a
+          >
         </p>
 
         <h2>Query Parameters</h2>
         <p>
           You can make the tool re-usable by adding the query parameters below
           to your URL.
-        </p>
-        <p>
-          <a
-            href="./viewer.html?background=./img/gallery/forest.jpg&logo=./img/gallery/odf_logo.png&title=Sample%20Thumbnail&category=Web%20Map&titleColor=3,77,0,0.6&sidebarColor=255,200,0,0.6"
-            target="_self"
-          >
-            See Example
-          </a>
         </p>
 
         <table class="highlight">
@@ -76,37 +68,49 @@
           </thead>
           <tbody>
             <tr>
-              <td>titleColor</td>
-              <td>Title background color</td>
-              <td>RGBA (r,g,b,a)</td>
-              <td>0,255,0,0.8</td>
-            </tr>
-            <tr>
-              <td>sidebarColor</td>
-              <td>Sidebar background color</td>
-              <td>RGBA (r,g,b,a)</td>
-              <td>0,0,255,0.8</td>
-            </tr>
-            <tr>
-              <td>category</td>
-              <td>Valid item category label</td>
-              <td>String</td>
-              <td>Web Map</td>
-            </tr>
-            <tr>
               <td>background</td>
-              <td>URL to background image</td>
-              <td>String (URL)</td>
-              <td>https://path.to/background.jpg</td>
+              <td>Background image URL</td>
+              <td>URL</td>
+              <td>https://path.to/background.png</td>
             </tr>
             <tr>
               <td>logo</td>
-              <td>URL to logo image</td>
-              <td>String (URL)</td>
+              <td>Logo image URL</td>
+              <td>URL</td>
               <td>https://path.to/logo.png</td>
+            </tr>
+            <tr>
+              <td>title</td>
+              <td>Title text</td>
+              <td>String</td>
+              <td>My Title</td>
+            </tr>
+            <tr>
+              <td>titleColor</td>
+              <td>Title bar color</td>
+              <td>r,g,b,a</td>
+              <td>0,152,219,0.9</td>
+            </tr>
+            <tr>
+              <td>sidebarColor</td>
+              <td>Sidebar color</td>
+              <td>r,g,b,a</td>
+              <td>255,158,23,0.9</td>
             </tr>
           </tbody>
         </table>
+
+        <p>See Example:</p>
+
+        <p>
+          <a
+            href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,158,23,0.9"
+            target="_blank"
+            rel="noopener"
+          >
+            https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,158,23,0.9</a
+          >
+        </p>
 
         <h2>Contact</h2>
         <p>

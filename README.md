@@ -27,13 +27,13 @@ A simple web app for creating thumbnails for ArcGIS Online content using HTML5 C
 
 You can preconfigure the thumbnail via URL query parameters:
 
-| Parameter      | Description                | Values           | Example                          |
-| -------------- | -------------------------- | ---------------- | -------------------------------- |
-| `titleColor`   | Title bar background color | `r,g,b,a` (RGBA) | `0,152,219,0.9`                  |
-| `sidebarColor` | Sidebar background color   | `r,g,b,a` (RGBA) | `255,158,23,0.9`                 |
-| `background`   | Background image URL       | URL              | `https://path.to/background.png` |
-| `logo`         | Logo image URL             | URL              | `https://path.to/logo.png`       |
-| `title`        | Main title text            | String           | `City Streets Layer`             |
+| Parameter      | Description          | Values    | Example                          |
+| -------------- | -------------------- | --------- | -------------------------------- |
+| `background`   | Background image URL | URL       | `https://path.to/background.png` |
+| `logo`         | Logo image URL       | URL       | `https://path.to/logo.png`       |
+| `title`        | Title text           | String    | `My Title`                       |
+| `titleColor`   | Title bar color      | `r,g,b,a` | `0,152,219,0.9`                  |
+| `sidebarColor` | Sidebar color        | `r,g,b,a` | `255,158,23,0.9`                 |
 
 **Example URL:**
 
