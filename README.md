@@ -29,17 +29,16 @@ You can preconfigure the thumbnail via URL query parameters:
 
 | Parameter      | Description                | Values           | Example                          |
 | -------------- | -------------------------- | ---------------- | -------------------------------- |
-| `titleColor`   | Title bar background color | `r,g,b,a` (RGBA) | `0,255,0,0.8`                    |
-| `sidebarColor` | Sidebar background color   | `r,g,b,a` (RGBA) | `0,0,255,0.8`                    |
-| `category`     | Category label             | String           | `Web Map`                        |
-| `background`   | Background image URL       | URL              | `https://path.to/background.jpg` |
-| `logo`         | Logo image URL             | URL (PNG ok)     | `https://path.to/logo.png`       |
+| `titleColor`   | Title bar background color | `r,g,b,a` (RGBA) | `0,152,219,0.9`                  |
+| `sidebarColor` | Sidebar background color   | `r,g,b,a` (RGBA) | `255,158,23,0.9`                 |
+| `background`   | Background image URL       | URL              | `https://path.to/background.png` |
+| `logo`         | Logo image URL             | URL              | `https://path.to/logo.png`       |
 | `title`        | Main title text            | String           | `City Streets Layer`             |
 
 **Example URL:**
 
-```
-./index.html?background=./img/gallery/forest.jpg&logo=./img/gallery/odf_logo.png&title=Sample%20Thumbnail&category=Web%20Map&titleColor=3,77,0,0.6&sidebarColor=255,200,0,0.6
+```url
+https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,158,23,0.9
 ```
 
 ---
