@@ -61,8 +61,22 @@ nav {
   border: 0 !important;
 }
 
+/* Skip-nav becomes visible when focused */
+.focusable:focus {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background: #ffffff;
+  color: #000000;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
 #download-image {
-  background-color: #551a8b !important; /* COSD blue */
+  background-color: #551a8b !important;
 }
 
 /* ---------- COSD Typography (all-sans) ---------- */
