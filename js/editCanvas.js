@@ -25,7 +25,7 @@ var titleComponent = {
   _text: function () {
     editCanvas.letterSpacing = 2;
     ctx.fillStyle = "rgba(255, 255, 255, 1)";
-    ctx.font = "30px open sans";
+    ctx.font = "30px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
 
@@ -91,7 +91,7 @@ var categoryComponent = {
     ctx.rotate(-0.5 * Math.PI);
     editCanvas.style.letterSpacing = 4;
     ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.font = "48px open sans";
+    ctx.font = "48px sans-serif";
     ctx.textAlign = "center";
 
     // Set shadow properties

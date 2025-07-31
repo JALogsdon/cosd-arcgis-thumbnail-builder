@@ -11,12 +11,7 @@ canvas {
   border: 1px solid black;
 }
 
-h2 {
-  font-size: 18px;
-  margin: 10px 0;
-}
-
-h2:first-of-type {
+#h2:first-of-type {
   margin-top: 25px;
 }
 
@@ -53,6 +48,53 @@ nav {
   background-color: #0098db;
 }
 
-input {
-  font-family: "Open Sans" !important;
+#download-image {
+  background-color: #551a8b !important; /* COSD blue */
+}
+
+/* ---------- COSD Typography (all-sans) ---------- */
+body,
+input,
+select,
+button {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1rem; /* default paragraph */
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Headings share the same family, just heavier weights */
+h1 {
+  font-size: 2.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+h2 {
+  font-size: 1.6875rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+h3 {
+  font-size: 1.3125rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+h4 {
+  font-size: 1rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+h5 {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+p.accent {
+  font-size: 1.375rem;
+  line-height: 1.5;
+}
+p.fine {
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
