@@ -1,153 +1,185 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>ArcGIS Thumbnail Builder</title>
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link rel="stylesheet" href="./css/materialize-colorpicker.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>ArcGIS Thumbnail Builder</title>
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <link rel="stylesheet" href="./css/materialize-colorpicker.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/main.css" />
+  </head>
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="./css/main.css" />
-</head>
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="./index.html" class="brand-logo">ArcGIS Thumbnail Builder</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="index.html" target="_self">Home</a></li>
+          <li><a href="help.html" target="_self">Help</a></li>
+        </ul>
+      </div>
+    </nav>
 
-<body>
-
-  <nav>
-    <div class="nav-wrapper">
-      <a href="./index.html" class="brand-logo">ArcGIS Thumbnail Builder</a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="index.html" target="_self">Home</a></li>
-        <li><a href="help.html" target="_self">Help</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <div class="container">
-
-    <div class="row">
-
-      <div class="col m6 s12">
-        <div class="row">
-          <canvas id="edit-canvas"></canvas>
-        </div>
-
-        <div class="row">
-          <div id="title-color" class="file-field">
-            <div class="btn color-icon"></div>
-            <div class="file-path-wrapper">
-              <input type="text" class="color-input" />
-            </div>
-          </div>
-          <div id="category-color" class="file-field">
-            <div class="btn color-icon"></div>
-            <div class="file-path-wrapper">
-              <input type="text" class="color-input" />
-            </div>
+    <div class="container">
+      <div class="row">
+        <div class="col m6 s12">
+          <div class="row">
+            <canvas id="edit-canvas"></canvas>
           </div>
 
+          <div class="row">
+            <div id="title-color" class="file-field">
+              <div class="btn color-icon"></div>
+              <div class="file-path-wrapper">
+                <input type="text" class="color-input" />
+              </div>
+            </div>
+            <div id="category-color" class="file-field">
+              <div class="btn color-icon"></div>
+              <div class="file-path-wrapper">
+                <input type="text" class="color-input" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <a
+              id="download-image"
+              download="thumbnail_generated.png"
+              class="waves-effect waves-light btn deep-purple lighten-2"
+              ><i class="material-icons left">save</i>Download</a
+            >
+          </div>
         </div>
 
-        <div class="row">
-          <a id="download-image" download="thumbnail_generated.png" class="waves-effect waves-light btn deep-purple lighten-2"><i class="material-icons left">save</i>Download</a>
+        <div class="col m6 s12">
+          <div class="row">
+            <h2>Title</h2>
+            <div class="input-field col s12">
+              <input
+                placeholder="Item Title"
+                type="text"
+                id="title"
+                name="title"
+              />
+              <label for="title"></label>
+            </div>
+          </div>
+
+          <div class="row">
+            <h2>Sidebar</h2>
+            <div class="input-field col s12">
+              <select name="category" id="category">
+                <option value="Dashboard">Dashboard</option>
+                <option value="Feature Layer">Feature Layer</option>
+                <option value="Field App">Field App</option>
+                <option value="File">File</option>
+                <option value="Form">Form</option>
+                <option value="Image">Image</option>
+                <option value="Imagery Layer">Imagery Layer</option>
+                <option value="Notebook">Notebook</option>
+                <option value="Project Template">Project Template</option>
+                <option value="StoryMap">StoryMap</option>
+                <option value="Survey">Survey</option>
+                <option value="Table">Table</option>
+                <option value="Tile Layer">Tile Layer</option>
+                <option value="Web App">Web App</option>
+                <option value="Web Map">Web Map</option>
+                <option value="__custom__">Other...</option>
+              </select>
+              <label for="category"></label>
+            </div>
+
+            <!-- Hidden text input for custom category -->
+            <div
+              class="input-field col s12"
+              id="custom-category-wrapper"
+              style="display: none"
+            >
+              <input
+                type="text"
+                id="custom-category"
+                placeholder="Enter custom category"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <h2>Background Image</h2>
+            <p
+              class="grey-text text-darken-1"
+              style="margin-top: -10px; margin-bottom: 20px"
+            >
+              Recommended: 600x400 pixels or larger (1.5:1 aspect ratio). PNG,
+              JPEG, or GIF.
+            </p>
+            <input type="hidden" id="background-url" />
+            <div class="input-field col s12">
+              <div class="file-field input-field">
+                <div class="btn">
+                  <span>File</span>
+                  <input type="file" id="background" />
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <h2>Logo Image</h2>
+            <p
+              class="grey-text text-darken-1"
+              style="margin-top: -10px; margin-bottom: 20px"
+            >
+              Recommended: 145x145 pixels or larger (1:1 aspect ratio). PNG,
+              JPEG, or GIF.
+            </p>
+            <input type="hidden" id="logo-url" />
+            <div class="input-field col s12">
+              <div class="file-field input-field">
+                <div class="btn">
+                  <span>File</span>
+                  <input type="file" id="logo" />
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="col m6 s12">
-
-        <div class="row">
-          <h2>Title</h2>
-          <div class="input-field col s12">
-            <input placeholder="Item Title" type="text" id="title" name="title" />
-            <label for="title"></label>
-          </div>
-        </div>
-
-        <div class="row">
-          <h2>Sidebar</h2>
-          <div class="input-field col s12">
-            <select name="category" id="category">
-              <option value="Dashboard">Dashboard</option>
-              <option value="Feature Layer">Feature Layer</option>
-              <option value="Field App">Field App</option>
-              <option value="File">File</option>
-              <option value="Form">Form</option>
-              <option value="Image">Image</option>
-              <option value="Imagery Layer">Imagery Layer</option>
-              <option value="Notebook">Notebook</option>
-              <option value="Project Template">Project Template</option>
-              <option value="StoryMap">StoryMap</option>
-              <option value="Survey">Survey</option>
-              <option value="Table">Table</option>
-              <option value="Tile Layer">Tile Layer</option>
-              <option value="Web App">Web App</option>
-              <option value="Web Map">Web Map</option>
-              <option value="__custom__">Other...</option>
-            </select>
-            <label for="category"></label>
-          </div>
-
-          <!-- Hidden text input for custom category -->
-          <div class="input-field col s12" id="custom-category-wrapper" style="display: none;">
-            <input type="text" id="custom-category" placeholder="Enter custom category">
-          </div>
-        </div>
-
-        <div class="row">
-          <h2>Background Image</h2>
-          <p class="grey-text text-darken-1" style="margin-top: -10px; margin-bottom: 20px;">
-            Recommended: 600x400 pixels or larger (1.5:1 aspect ratio). PNG, JPEG, or GIF.
-          </p>
-          <input type="hidden" id="background-url" />
-          <div class="input-field col s12">
-            <div class="file-field input-field">
-              <div class="btn">
-                <span>File</span>
-                <input type="file" id="background">
-              </div>
-              <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <h2>Logo Image</h2>
-          <p class="grey-text text-darken-1" style="margin-top: -10px; margin-bottom: 20px;">
-            Recommended: 145x145 pixels or larger (1:1 aspect ratio). PNG, JPEG, or GIF.
-          </p>
-          <input type="hidden" id="logo-url" />
-          <div class="input-field col s12">
-            <div class="file-field input-field">
-              <div class="btn">
-                <span>File</span>
-                <input type="file" id="logo">
-              </div>
-              <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
+      <!-- /row -->
     </div>
-    <!-- /row -->
-
-  </div>
-  <!-- /container -->
-  <!-- Compiled and minified JavaScript -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="./js/materialize-colorpicker.min.js"></script>
-  <script src="./js/editCanvas.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-12419040-13"></script>
-
-</body>
-
+    <!-- /container -->
+    <!-- Compiled and minified JavaScript -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="./js/materialize-colorpicker.min.js"></script>
+    <script src="./js/editCanvas.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-12419040-13"
+    ></script>
+  </body>
 </html>
