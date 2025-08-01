@@ -148,27 +148,6 @@
         </p>
       </div>
     </div>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("theme-toggle");
-        const bodyEl = document.body;
-        if (!btn) return; // nothing to do if toggle isn’t on this page
-
-        // Initialize theme
-        const stored = localStorage.getItem("theme");
-        const prefers = window.matchMedia(
-          "(prefers-color-scheme: dark)"
-        ).matches;
-        const useDark = stored ? stored === "dark" : prefers;
-        if (useDark) bodyEl.classList.add("dark-mode");
-
-        // Toggle on click
-        btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          const isNowDark = bodyEl.classList.toggle("dark-mode");
-          localStorage.setItem("theme", isNowDark ? "dark" : "light");
-        });
-      });
-    </script>
+    <script src="js/editCanvas.js"></script>
   </body>
 </html>

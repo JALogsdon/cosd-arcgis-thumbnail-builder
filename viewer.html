@@ -211,24 +211,6 @@
       async
       src="https://www.googletagmanager.com/gtag/js?id=UA-12419040-13"
     ></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("theme-toggle");
-        const bodyEl = document.body;
-        // initialise based on stored preference or system dark mode
-        const stored = localStorage.getItem("theme");
-        const prefers = window.matchMedia(
-          "(prefers-color-scheme: dark)"
-        ).matches;
-        const useDark = stored ? stored === "dark" : prefers;
-        if (useDark) bodyEl.classList.add("dark-mode");
-
-        btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          const nowDark = bodyEl.classList.toggle("dark-mode");
-          localStorage.setItem("theme", nowDark ? "dark" : "light");
-        });
-      });
-    </script>
+    <script src="js/editCanvas.js"></script>
   </body>
 </html>

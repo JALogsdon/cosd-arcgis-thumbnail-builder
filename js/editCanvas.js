@@ -361,6 +361,25 @@ document.addEventListener("DOMContentLoaded", function () {
       a.click();
       document.body.removeChild(a);
     });
+  /*
+  // Theme toggle setup (moved inside DOMContentLoaded)
+  const themeBtn = document.getElementById("theme-toggle");
+  if (themeBtn) {
+    // initialize based on localStorage or system preference
+    const stored = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const useDark = stored ? stored === "dark" : prefersDark;
+    if (useDark) document.body.classList.add("dark-mode");
+
+    themeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const nowDark = document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", nowDark ? "dark" : "light");
+    });
+  }
+*/
 });
 
 // Helper function to get URL Query Params
@@ -372,20 +391,3 @@ function getUrlParameter(name) {
     ? false
     : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
-
-// Theme toggle: sync with prefers-color-scheme and persist override
-(function () {
-  const btn = document.getElementById("theme-toggle");
-  const body = document.body;
-  // initialise from localStorage or system
-  const stored = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const isDark = stored ? stored === "dark" : prefersDark;
-  if (isDark) body.classList.add("dark-mode");
-  // click handler
-  btn?.addEventListener("click", (e) => {
-    e.preventDefault();
-    const nowDark = body.classList.toggle("dark-mode");
-    localStorage.setItem("theme", nowDark ? "dark" : "light");
-  });
-})();

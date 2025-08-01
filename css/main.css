@@ -9,9 +9,8 @@
   --accent: #0073a6;
 }
 
-/* System dark mode */
+/*
 @media (prefers-color-scheme: dark) {
-  /* Token overrides */
   :root {
     --bg: #1e1e1e;
     --fg: #e0e0e0;
@@ -19,7 +18,6 @@
     --primary: #0073a6;
     --accent: #0098db;
   }
-  /* Banner */
   nav {
     background-color: var(--accent) !important;
   }
@@ -27,7 +25,6 @@
   nav .nav-wrapper a {
     color: #ffffff !important;
   }
-  /* Cards & captions */
   .card {
     background-color: var(--surface) !important;
   }
@@ -36,9 +33,7 @@
   }
 }
 
-/* Manual dark-mode toggle */
 body.dark-mode {
-  /* exactly the same overrides as above */
   --bg: #1e1e1e;
   --fg: #e0e0e0;
   --surface: #2a2a2a;
@@ -58,6 +53,7 @@ body.dark-mode .card {
 body.dark-mode .card-content p {
   color: #ffffff !important;
 }
+*\
 
 /* ---------- COSD Typography (all-sans) ---------- */
 body,
