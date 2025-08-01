@@ -1,91 +1,62 @@
-canvas {
-  height: 233px;
-  width: 350px;
-  border: 1px solid black;
-  margin-top: 25px;
+/* Commit: chore(css): reorganize and apply dark-mode variables, typography, accessibility rules */
+
+/* Theme tokens */
+:root {
+  --bg: #ffffff;
+  --fg: #222222;
+  --surface: #f2f2f2;
+  --primary: #0098db;
+  --accent: #0073a6;
 }
 
-#editCanvas {
-  height: 233px;
-  width: 350px;
-  border: 1px solid black;
+/* System dark mode */
+@media (prefers-color-scheme: dark) {
+  /* Token overrides */
+  :root {
+    --bg: #1e1e1e;
+    --fg: #e0e0e0;
+    --surface: #2a2a2a;
+    --primary: #0073a6;
+    --accent: #0098db;
+  }
+  /* Banner */
+  nav {
+    background-color: var(--accent) !important;
+  }
+  nav .nav-wrapper .brand-logo,
+  nav .nav-wrapper a {
+    color: #ffffff !important;
+  }
+  /* Cards & captions */
+  .card {
+    background-color: var(--surface) !important;
+  }
+  .card-content p {
+    color: #ffffff !important;
+  }
 }
 
-#h2:first-of-type {
-  margin-top: 25px;
+/* Manual dark-mode toggle */
+body.dark-mode {
+  /* exactly the same overrides as above */
+  --bg: #1e1e1e;
+  --fg: #e0e0e0;
+  --surface: #2a2a2a;
+  --primary: #0073a6;
+  --accent: #0098db;
 }
-
-.color-input {
-  width: 80% !important;
+body.dark-mode nav {
+  background-color: var(--accent) !important;
 }
-
-#title-color .btn {
-  background-color: rgba(0, 255, 0, 0.8);
+body.dark-mode nav .nav-wrapper .brand-logo,
+body.dark-mode nav .nav-wrapper a {
+  color: #ffffff !important;
 }
-
-#category-color .btn {
-  background-color: rgba(0, 0, 255, 0.8);
+body.dark-mode .card {
+  background-color: var(--surface) !important;
 }
-
-.brand-logo {
-  margin-left: 25px;
-}
-
-nav {
-  background-color: #0098db;
-  overflow: hidden;
-}
-
-.row {
-  margin-bottom: 4px;
-}
-
-.input-field {
-  margin: 4px 0 4px 0;
-}
-
-.btn {
-  background-color: #0098db;
-}
-
-/* Visible focus outline for keyboard users */
-.btn:focus,
-a:focus,
-input:focus,
-select:focus {
-  outline: 2px solid #000; /* meets 3:1 contrast */
-  outline-offset: 2px; /* moves outline away from element edge */
-}
-
-/* Utility: hide text visually while keeping it accessible */
-.visually-hidden {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
-/* Skip-nav becomes visible when focused */
-.focusable:focus {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-  background: #ffffff;
-  color: #000000;
-  padding: 8px 12px;
-  border-radius: 4px;
-  text-decoration: none;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-}
-
-#download-image {
-  background-color: #551a8b !important;
+body.dark-mode .card-content p {
+  color: #ffffff !important;
 }
 
 /* ---------- COSD Typography (all-sans) ---------- */
@@ -94,9 +65,11 @@ input,
 select,
 button {
   font-family: "Open Sans", sans-serif;
-  font-size: 1rem; /* default paragraph */
+  font-size: 1rem;
   line-height: 1.5;
   font-weight: 400;
+  background-color: var(--bg);
+  color: var(--fg);
 }
 
 /* Headings share the same family, just heavier weights */
@@ -133,4 +106,128 @@ p.accent {
 p.fine {
   font-size: 0.75rem;
   line-height: 1.5;
+}
+
+/* Canvas and container resets */
+canvas {
+  height: 233px;
+  width: 350px;
+  border: 1px solid black;
+  margin-top: 25px;
+}
+
+#editCanvas {
+  height: 233px;
+  width: 350px;
+  border: 1px solid black;
+}
+
+#h2:first-of-type {
+  margin-top: 25px;
+}
+
+.color-input {
+  width: 80% !important;
+}
+
+#title-color .btn {
+  background-color: rgba(0, 255, 0, 0.8);
+}
+
+#category-color .btn {
+  background-color: rgba(0, 0, 255, 0.8);
+}
+
+.brand-logo {
+  margin-left: 25px;
+}
+
+/* 1. Default (light mode) banner: COSD blue */
+nav {
+  background: var(--primary);
+}
+
+/* Thicken header text for better legibility */
+@media (prefers-color-scheme: light) {
+  .nav-wrapper .brand-logo,
+  .nav-wrapper a {
+    font-weight: 600 !important;
+  }
+}
+
+/* 2. Banner text always dark in light mode */
+.nav-wrapper .brand-logo,
+.nav-wrapper a {
+  color: var(--fg) !important;
+}
+
+.row {
+  margin-bottom: 4px;
+}
+
+.input-field {
+  margin: 4px 0;
+}
+
+/* Buttons */
+.btn {
+  background-color: var(--primary);
+  color: var(--bg);
+}
+
+/* Download button override */
+#download-image {
+  background-color: var(--accent) !important;
+}
+
+/* Visible focus outline for keyboard users */
+.btn:focus,
+a:focus,
+input:focus,
+select:focus {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* Utility: hide text visually while keeping it accessible */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Skip-nav becomes visible when focused */
+.focusable:focus {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background: #ffffff;
+  color: #000000;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Enhance gallery-card readability */
+.card-content p {
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.card-action a {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Helper text (background/logo instructions) */
+.row p.grey-text.text-darken-1 {
+  color: var(--fg) !important;
 }

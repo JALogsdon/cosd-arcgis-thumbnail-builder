@@ -24,14 +24,16 @@
 
   <body>
     <a href="#main" class="visually-hidden focusable">Skip to content</a>
-    <nav>
+    <nav role="navigation">
       <div class="nav-wrapper">
         <a href="./index.html" class="brand-logo">ArcGIS Thumbnail Builder</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a href="./index.html" target="_self">Home</a></li>
+          <li><a href="help.html" target="_self">Help</a></li>
           <li>
-            <a href="help.html" target="_self">Help</a>
-            >
+            <a href="#" id="theme-toggle" title="Toggle light/dark mode">
+              <i class="material-icons">dark_mode</i>
+            </a>
           </li>
         </ul>
       </div>
@@ -146,5 +148,27 @@
         </p>
       </div>
     </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("theme-toggle");
+        const bodyEl = document.body;
+        if (!btn) return; // nothing to do if toggle isn’t on this page
+
+        // Initialize theme
+        const stored = localStorage.getItem("theme");
+        const prefers = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        const useDark = stored ? stored === "dark" : prefers;
+        if (useDark) bodyEl.classList.add("dark-mode");
+
+        // Toggle on click
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const isNowDark = bodyEl.classList.toggle("dark-mode");
+          localStorage.setItem("theme", isNowDark ? "dark" : "light");
+        });
+      });
+    </script>
   </body>
 </html>
