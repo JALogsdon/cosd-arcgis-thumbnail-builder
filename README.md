@@ -8,8 +8,10 @@ A simple web app for creating thumbnails for ArcGIS Online content using HTML5 C
 
 ## Features
 
-- Background and logo placement with enforced sizes and aspect ratios
-- Title and sidebar color blocks with RGBA control
+- **Item thumbnails** (600x400) — title bar, sidebar category label, logo, and background
+- **Group thumbnails** (400x400) — title bar, logo, and background
+- Background and logo placement with enforced aspect-ratio cropping
+- Title and color blocks with RGBA control via color picker
 - Query-parameter driven configuration for easy reuse/sharing
 - Works as a static site (no build step or server-side code)
 
@@ -17,15 +19,23 @@ A simple web app for creating thumbnails for ArcGIS Online content using HTML5 C
 
 ## Image Guidelines
 
+### Item Thumbnails (600x400)
 - **Output canvas:** 600x400 px (1.5:1)
 - **Background:** cropped to 1.5:1, then scaled to fill 600x400
 - **Logo:** cropped to 1:1 and drawn at 145x145 px; transparent PNG recommended
+
+### Group Thumbnails (400x400)
+- **Output canvas:** 400x400 px (1:1)
+- **Background:** cropped to 1:1, then scaled to fill 400x400
+- **Logo:** cropped to 1:1 and drawn at 120x120 px; transparent PNG recommended
 
 ---
 
 ## Query Parameters
 
-You can preconfigure the thumbnail via URL query parameters:
+Both `viewer.html` (item thumbnails) and `group.html` (group thumbnails) support URL query parameters for preconfiguration.
+
+### Item Thumbnail (`viewer.html`)
 
 | Parameter      | Description          | Values    | Example                          |
 | -------------- | -------------------- | --------- | -------------------------------- |
@@ -34,11 +44,27 @@ You can preconfigure the thumbnail via URL query parameters:
 | `title`        | Title text           | String    | `My Title`                       |
 | `titleColor`   | Title bar color      | `r,g,b,a` | `0,152,219,0.9`                  |
 | `sidebarColor` | Sidebar color        | `r,g,b,a` | `255,158,23,0.9`                 |
+| `category`     | Sidebar label        | String    | `Web Map`                        |
 
 **Example URL:**
 
 ```url
 https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,158,23,0.9
+```
+
+### Group Thumbnail (`group.html`)
+
+| Parameter    | Description          | Values    | Example                          |
+| ------------ | -------------------- | --------- | -------------------------------- |
+| `background` | Background image URL | URL       | `https://path.to/background.png` |
+| `logo`       | Logo image URL       | URL       | `https://path.to/logo.png`       |
+| `title`      | Title text           | String    | `My Group`                       |
+| `titleColor` | Title bar color      | `r,g,b,a` | `0,152,219,0.9`                  |
+
+**Example URL:**
+
+```url
+https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/group.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Group&titleColor=0,152,219,0.9
 ```
 
 ---

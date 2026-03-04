@@ -118,6 +118,11 @@ canvas {
   border: 1px solid black;
 }
 
+#group-canvas {
+  height: 300px;
+  width: 300px;
+}
+
 h2:first-of-type {
   margin-top: 25px;
 }
