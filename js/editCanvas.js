@@ -360,25 +360,6 @@ document.addEventListener("DOMContentLoaded", function () {
       a.click();
       document.body.removeChild(a);
     });
-  /*
-  // Theme toggle setup (moved inside DOMContentLoaded)
-  const themeBtn = document.getElementById("theme-toggle");
-  if (themeBtn) {
-    // initialize based on localStorage or system preference
-    const stored = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    const useDark = stored ? stored === "dark" : prefersDark;
-    if (useDark) document.body.classList.add("dark-mode");
-
-    themeBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const nowDark = document.body.classList.toggle("dark-mode");
-      localStorage.setItem("theme", nowDark ? "dark" : "light");
-    });
-  }
-*/
 });
 
 // Helper function to get URL Query Params
