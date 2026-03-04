@@ -53,7 +53,7 @@ body.dark-mode .card {
 body.dark-mode .card-content p {
   color: #ffffff !important;
 }
-*\
+*/
 
 /* ---------- COSD Typography (all-sans) ---------- */
 body,
@@ -118,7 +118,7 @@ canvas {
   border: 1px solid black;
 }
 
-#h2:first-of-type {
+h2:first-of-type {
   margin-top: 25px;
 }
 

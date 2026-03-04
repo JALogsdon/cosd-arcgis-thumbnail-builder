@@ -1,4 +1,5 @@
 var editCanvas = document.querySelector("#edit-canvas");
+if (!editCanvas) throw new Error("editCanvas.js loaded on a page without #edit-canvas");
 editCanvas.height = 400;
 editCanvas.width = 600;
 
@@ -23,7 +24,6 @@ var titleComponent = {
     ctx.fillRect(0, 300, 500, 120);
   },
   _text: function () {
-    editCanvas.letterSpacing = 2;
     ctx.fillStyle = "rgba(255, 255, 255, 1)";
     ctx.font = "30px sans-serif";
     ctx.textAlign = "center";
@@ -89,7 +89,6 @@ var categoryComponent = {
     ctx.save();
     ctx.translate(524, 200);
     ctx.rotate(-0.5 * Math.PI);
-    editCanvas.style.letterSpacing = 4;
     ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
     ctx.font = "48px sans-serif";
     ctx.textAlign = "center";
@@ -329,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (match) {
       match.selected = true;
     } else {
-      document.querySelector("#category").value = "Web Map";
+      document.querySelector("#category").value = "__custom__";
       customWrapper.style.display = "block";
       customInput.value = value;
     }
@@ -344,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Select Dropdowns to Material Styles
   var elems = document.querySelectorAll("select");
-  instances = M.FormSelect.init(elems);
+  var instances = M.FormSelect.init(elems);
 
   draw();
 
