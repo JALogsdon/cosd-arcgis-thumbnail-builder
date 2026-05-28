@@ -32,6 +32,12 @@ body.dark-mode .card-content p {
 body.dark-mode canvas {
   border-color: #555;
 }
+body.dark-mode .sidenav {
+  background-color: var(--surface);
+}
+body.dark-mode .sidenav a {
+  color: var(--fg);
+}
 
 /* ---------- COSD Typography (all-sans) ---------- */
 body,
@@ -90,12 +96,6 @@ canvas {
   margin-top: 25px;
 }
 
-#editCanvas {
-  height: 233px;
-  width: 350px;
-  border: 1px solid black;
-}
-
 #group-canvas {
   height: 300px;
   width: 300px;
@@ -148,9 +148,9 @@ nav {
   margin: 4px 0;
 }
 
-/* Buttons */
+/* Buttons — accent passes WCAG AA contrast with --bg text in both themes */
 .btn {
-  background-color: var(--primary);
+  background-color: var(--accent);
   color: var(--bg);
 }
 
@@ -164,7 +164,7 @@ nav {
 a:focus,
 input:focus,
 select:focus {
-  outline: 2px solid #000;
+  outline: 2px solid var(--fg);
   outline-offset: 2px;
 }
 

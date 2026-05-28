@@ -43,13 +43,13 @@ Both `viewer.html` (item thumbnails) and `group.html` (group thumbnails) support
 | `logo`         | Logo image URL       | URL       | `https://path.to/logo.png`       |
 | `title`        | Title text           | String    | `My Title`                       |
 | `titleColor`   | Title bar color      | `r,g,b,a` | `0,152,219,0.9`                  |
-| `sidebarColor` | Sidebar color        | `r,g,b,a` | `255,158,23,0.9`                 |
+| `sidebarColor` | Sidebar color        | `r,g,b,a` | `255,160,47,0.9`                 |
 | `category`     | Sidebar label        | String    | `Web Map`                        |
 
 **Example URL:**
 
 ```url
-https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,158,23,0.9
+https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,160,47,0.9
 ```
 
 ### Group Thumbnail (`group.html`)

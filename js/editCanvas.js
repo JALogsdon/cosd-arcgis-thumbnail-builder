@@ -53,7 +53,7 @@ var titleComponent = {
       }
       context.fillText(line, x, y);
     }
-    wrapText(ctx, this.properties.text(), 255, 326, 450, 35);
+    wrapText(ctx, this.properties.text(), 250, 326, 450, 35);
 
     // Reset shadow properties
     ctx.shadowColor = "transparent";
@@ -350,15 +350,9 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelector("#download-image")
     .addEventListener("click", function () {
-      //to png
-      var img = document.createElement("img");
-      img.src = editCanvas.toDataURL();
-      var a = document.createElement("a");
-      a.href = img.src;
-      a.download = "thumbnail.png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Point the link at the current canvas image; the anchor's own
+      // download attribute saves the file (works for mouse and keyboard).
+      this.href = editCanvas.toDataURL("image/png");
     });
 });
 

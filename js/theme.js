@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var btn = document.getElementById("theme-toggle");
-  if (!btn) return;
+  // Initialize the mobile side navigation (requires Materialize JS).
+  if (window.M && M.Sidenav) {
+    M.Sidenav.init(document.querySelectorAll(".sidenav"));
+  }
+
+  // Support more than one toggle (top bar + mobile sidenav) without
+  // relying on a duplicate element id.
+  var toggles = document.querySelectorAll("[data-theme-toggle]");
+  if (!toggles.length) return;
 
   // Initialize from localStorage, falling back to system preference
   var stored = localStorage.getItem("theme");
@@ -8,17 +15,21 @@ document.addEventListener("DOMContentLoaded", function () {
   var useDark = stored ? stored === "dark" : prefersDark;
 
   if (useDark) document.body.classList.add("dark-mode");
-  updateIcon(useDark);
+  updateIcons(useDark);
 
-  btn.addEventListener("click", function (e) {
-    e.preventDefault();
-    var nowDark = document.body.classList.toggle("dark-mode");
-    localStorage.setItem("theme", nowDark ? "dark" : "light");
-    updateIcon(nowDark);
+  toggles.forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var nowDark = document.body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", nowDark ? "dark" : "light");
+      updateIcons(nowDark);
+    });
   });
 
-  function updateIcon(dark) {
-    var icon = btn.querySelector(".material-icons");
-    if (icon) icon.textContent = dark ? "light_mode" : "dark_mode";
+  function updateIcons(dark) {
+    toggles.forEach(function (btn) {
+      var icon = btn.querySelector(".material-icons");
+      if (icon) icon.textContent = dark ? "light_mode" : "dark_mode";
+    });
   }
 });

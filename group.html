@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ArcGIS Group Thumbnail Builder</title>
     <link
       rel="stylesheet"
@@ -25,19 +25,35 @@
     <nav role="navigation">
       <div class="nav-wrapper">
         <a href="./index.html" class="brand-logo">ArcGIS Thumbnail Builder</a>
+        <a href="#" data-target="mobile-nav" class="sidenav-trigger">
+          <i class="material-icons">menu</i>
+        </a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a href="index.html" target="_self">Home</a></li>
           <li><a href="viewer.html" target="_self">Item Thumbnail</a></li>
           <li><a href="group.html" target="_self">Group Thumbnail</a></li>
           <li><a href="help.html" target="_self">Help</a></li>
           <li>
-            <a href="#" id="theme-toggle" title="Toggle light/dark mode">
+            <a href="#" data-theme-toggle title="Toggle light/dark mode">
               <i class="material-icons">dark_mode</i>
             </a>
           </li>
         </ul>
       </div>
     </nav>
+
+    <!-- Mobile side navigation -->
+    <ul class="sidenav" id="mobile-nav">
+      <li><a href="index.html" target="_self">Home</a></li>
+      <li><a href="viewer.html" target="_self">Item Thumbnail</a></li>
+      <li><a href="group.html" target="_self">Group Thumbnail</a></li>
+      <li><a href="help.html" target="_self">Help</a></li>
+      <li>
+        <a href="#" data-theme-toggle title="Toggle light/dark mode">
+          <i class="material-icons">dark_mode</i>
+        </a>
+      </li>
+    </ul>
 
     <main id="main" class="container">
       <div class="row">
@@ -69,8 +85,9 @@
           <div class="row">
             <a
               id="download-image"
+              href="#"
               download="group-thumbnail.png"
-              class="waves-effect waves-light btn deep-purple lighten-2"
+              class="waves-effect waves-light btn"
               ><i class="material-icons left">save</i>Download</a
             >
           </div>
@@ -154,10 +171,5 @@
     <script src="./js/materialize-colorpicker.min.js"></script>
     <script src="./js/groupCanvas.js"></script>
     <script src="./js/theme.js"></script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=UA-12419040-13"
-    ></script>
   </body>
 </html>
