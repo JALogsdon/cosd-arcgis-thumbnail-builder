@@ -1,318 +1,272 @@
 var editCanvas = document.querySelector("#edit-canvas");
-if (!editCanvas) throw new Error("editCanvas.js loaded on a page without #edit-canvas");
+if (!editCanvas)
+  throw new Error("editCanvas.js loaded on a page without #edit-canvas");
 editCanvas.height = 400;
 editCanvas.width = 600;
 
 var ctx = editCanvas.getContext("2d");
 
-// Title and Title Background
-var titleComponent = {
-  properties: {
-    text: function () {
-      return document.querySelector("#title").value;
-    },
-    bgColor: function () {
-      return $("#title-color").colorpicker("getValue");
-    },
-  },
-  draw: function () {
-    this._bg();
-    this._text();
-  },
-  _bg: function () {
-    ctx.fillStyle = this.properties.bgColor();
-    ctx.fillRect(0, 300, 500, 120);
-  },
-  _text: function () {
-    ctx.fillStyle = "rgba(255, 255, 255, 1)";
-    ctx.font = "30px sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
+// Decoded images are cached so draw() (called on every keystroke) only
+// redraws — it never re-reads the file or re-decodes the image.
+var bgImage = null;
+var logoImage = null;
 
-    // Set shadow properties
-    ctx.shadowColor = "black";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetX = 3;
-    ctx.shadowOffsetY = 3;
+function setShadow() {
+  ctx.shadowColor = "black";
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 3;
+}
 
-    function wrapText(context, text, x, y, maxWidth, lineHeight) {
-      var words = text.split(" ");
-      var line = "";
+function clearShadow() {
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+}
 
-      for (var n = 0; n < words.length; n++) {
-        var testLine = line + words[n] + " ";
-        var metrics = context.measureText(testLine);
-        var testWidth = metrics.width;
-        if (testWidth > maxWidth && n > 0) {
-          context.fillText(line, x, y);
-          line = words[n] + " ";
-          y += lineHeight;
-        } else {
-          line = testLine;
-        }
+// Center-crop a source image to a target aspect ratio (width / height).
+function coverCrop(img, aspectTarget) {
+  var sw = img.width;
+  var sh = img.height;
+  var sa = sw / sh;
+  var w = sw;
+  var h = sh;
+  var x = 0;
+  var y = 0;
+  if (sa > aspectTarget) {
+    w = sh * aspectTarget;
+    x = (sw - w) / 2;
+  } else if (sa < aspectTarget) {
+    h = sw / aspectTarget;
+    y = (sh - h) / 2;
+  }
+  return { x: x, y: y, w: w, h: h };
+}
+
+// Wrap text to maxWidth, hard-breaking any single word that is itself
+// wider than maxWidth (so long unbroken strings can't overflow sideways).
+function wrapLines(context, text, maxWidth) {
+  var lines = [];
+  var words = text.split(/\s+/).filter(Boolean);
+  var line = "";
+  for (var i = 0; i < words.length; i++) {
+    var word = words[i];
+    while (context.measureText(word).width > maxWidth && word.length > 1) {
+      var k = 1;
+      while (
+        k < word.length &&
+        context.measureText(word.slice(0, k + 1)).width <= maxWidth
+      ) {
+        k++;
       }
-      context.fillText(line, x, y);
-    }
-    wrapText(ctx, this.properties.text(), 250, 326, 450, 35);
-
-    // Reset shadow properties
-    ctx.shadowColor = "transparent";
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-  },
-};
-
-// Category and Category Background
-var categoryComponent = {
-  properties: {
-    text: function () {
-      const selected = document.querySelector("#category").value;
-      if (selected === "__custom__") {
-        return document.querySelector("#custom-category").value || "";
+      if (line) {
+        lines.push(line);
+        line = "";
       }
-      return selected;
-    },
-    bgColor: function () {
-      return $("#category-color").colorpicker("getValue");
-    },
-  },
-  draw: function () {
-    this._bg();
-    this._text();
-  },
-  _bg: function () {
-    ctx.fillStyle = this.properties.bgColor();
-    ctx.fillRect(500, 0, 150, 400);
-  },
-  _text: function () {
-    ctx.save();
-    ctx.translate(524, 200);
-    ctx.rotate(-0.5 * Math.PI);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.font = "48px sans-serif";
-    ctx.textAlign = "center";
-
-    // Set shadow properties
-    ctx.shadowColor = "black";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetX = 3;
-    ctx.shadowOffsetY = 3;
-
-    ctx.fillText(this.properties.text(), 0, 0);
-    ctx.restore();
-  },
-};
-
-// Background Image
-var backgroundComponent = {
-  properties: {
-    domId: "#background",
-  },
-  draw: function () {
-    this._addImage();
-  },
-  _addImage: function () {
-    var file = document.querySelector(this.properties.domId).files[0];
-    var background = new Image();
-    background.crossOrigin = "Anonymous";
-    var reader = new FileReader();
-
-    background.onload = function () {
-      const aspectTarget = 1.5; // 1.5:1
-      const srcWidth = background.width;
-      const srcHeight = background.height;
-      const srcAspect = srcWidth / srcHeight;
-
-      let cropWidth = srcWidth;
-      let cropHeight = srcHeight;
-      let cropX = 0;
-      let cropY = 0;
-
-      if (srcAspect > aspectTarget) {
-        // Image is too wide — crop sides
-        cropWidth = srcHeight * aspectTarget;
-        cropX = (srcWidth - cropWidth) / 2;
-      } else if (srcAspect < aspectTarget) {
-        // Image is too tall — crop top/bottom
-        cropHeight = srcWidth / aspectTarget;
-        cropY = (srcHeight - cropHeight) / 2;
-      }
-
-      ctx.globalCompositeOperation = "destination-over";
-      ctx.drawImage(
-        background,
-        cropX,
-        cropY,
-        cropWidth,
-        cropHeight,
-        0,
-        0,
-        600,
-        400
-      );
-      ctx.globalCompositeOperation = "source-over";
-    };
-
-    if (file) {
-      reader.addEventListener(
-        "load",
-        function () {
-          background.src = reader.result;
-        },
-        false
-      );
-
-      reader.readAsDataURL(file);
+      lines.push(word.slice(0, k));
+      word = word.slice(k);
     }
-
-    if (!file && document.querySelector("#background-url").value !== "") {
-      background.src = document.querySelector("#background-url").value;
+    var test = line ? line + " " + word : word;
+    if (context.measureText(test).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
     }
-  },
-};
+  }
+  if (line) lines.push(line);
+  return lines;
+}
 
-// Logo
-var logoComponent = {
-  properties: {
-    domId: "#logo",
-  },
-  draw: function () {
-    this._addImage();
-  },
-  _addImage: function () {
-    var file = document.querySelector(this.properties.domId).files[0];
-    var background = new Image();
-    background.crossOrigin = "Anonymous";
-    var reader = new FileReader();
-
-    background.onload = function () {
-      const aspectTarget = 1; // 1:1 square
-      const srcWidth = background.width;
-      const srcHeight = background.height;
-      const srcAspect = srcWidth / srcHeight;
-
-      let cropWidth = srcWidth;
-      let cropHeight = srcHeight;
-      let cropX = 0;
-      let cropY = 0;
-
-      if (srcAspect > aspectTarget) {
-        // Image is too wide — crop sides
-        cropWidth = srcHeight * aspectTarget;
-        cropX = (srcWidth - cropWidth) / 2;
-      } else if (srcAspect < aspectTarget) {
-        // Image is too tall — crop top/bottom
-        cropHeight = srcWidth / aspectTarget;
-        cropY = (srcHeight - cropHeight) / 2;
-      }
-
-      // Keep your existing shadow settings
-      ctx.shadowColor = "black";
-      ctx.shadowBlur = 5;
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 3;
-
-      // Draw the cropped square scaled to 145x145 at (5,5). Transparency preserved.
-      ctx.drawImage(
-        background,
-        cropX,
-        cropY,
-        cropWidth,
-        cropHeight,
-        5,
-        5,
-        145,
-        145
-      );
-
-      // Reset shadow
-      ctx.shadowColor = "transparent";
-      ctx.shadowBlur = 0;
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-    };
-
-    if (file) {
-      reader.addEventListener(
-        "load",
-        function () {
-          background.src = reader.result;
-        },
-        false
-      );
-
-      reader.readAsDataURL(file);
+// Largest font size (<= baseSize) whose wrapped lines fit the box.
+function fitText(context, text, maxWidth, maxHeight, baseSize, family) {
+  for (var size = baseSize; size >= 12; size -= 2) {
+    context.font = size + "px " + family;
+    var lines = wrapLines(context, text, maxWidth);
+    var lineHeight = Math.round(size * 1.15);
+    if (lines.length * lineHeight <= maxHeight) {
+      return { size: size, lines: lines, lineHeight: lineHeight };
     }
+  }
+  context.font = "12px " + family;
+  return {
+    size: 12,
+    lines: wrapLines(context, text, maxWidth),
+    lineHeight: 14,
+  };
+}
 
-    if (!file && document.querySelector("#logo-url").value !== "") {
-      background.src = document.querySelector("#logo-url").value;
-    }
-  },
-};
+function drawTitle() {
+  ctx.fillStyle = $("#title-color").colorpicker("getValue");
+  ctx.fillRect(0, 300, 500, 120);
 
-// main function to draw / redraw canvas
+  var text = document.querySelector("#title").value;
+  if (!text) return;
+
+  // Title bar visible area: x 0–500, y 300–400.
+  var box = { x: 250, top: 300, height: 100, maxWidth: 460 };
+  ctx.fillStyle = "rgba(255, 255, 255, 1)";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  setShadow();
+  var fit = fitText(ctx, text, box.maxWidth, box.height - 12, 30, "sans-serif");
+  ctx.font = fit.size + "px sans-serif";
+  var totalH = fit.lines.length * fit.lineHeight;
+  var startY = box.top + (box.height - totalH) / 2 + fit.lineHeight / 2;
+  for (var i = 0; i < fit.lines.length; i++) {
+    ctx.fillText(fit.lines[i], box.x, startY + i * fit.lineHeight);
+  }
+  clearShadow();
+}
+
+function drawCategory() {
+  var selected = document.querySelector("#category").value;
+  var text =
+    selected === "__custom__"
+      ? document.querySelector("#custom-category").value || ""
+      : selected;
+
+  ctx.fillStyle = $("#category-color").colorpicker("getValue");
+  ctx.fillRect(500, 0, 150, 400);
+  if (!text) return;
+
+  ctx.save();
+  ctx.translate(524, 200);
+  ctx.rotate(-0.5 * Math.PI);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  // Shrink to fit along the sidebar's length (the canvas height, ~360 usable).
+  var size = 48;
+  while (size > 16) {
+    ctx.font = size + "px sans-serif";
+    if (ctx.measureText(text).width <= 360) break;
+    size -= 2;
+  }
+  ctx.font = size + "px sans-serif";
+  setShadow();
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+  clearShadow();
+}
+
+function drawBackground() {
+  if (!bgImage) return;
+  var c = coverCrop(bgImage, 1.5); // 1.5:1
+  ctx.globalCompositeOperation = "destination-over";
+  ctx.drawImage(bgImage, c.x, c.y, c.w, c.h, 0, 0, 600, 400);
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function drawLogo() {
+  if (!logoImage) return;
+  var c = coverCrop(logoImage, 1); // square
+  ctx.shadowColor = "black";
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 3;
+  ctx.drawImage(logoImage, c.x, c.y, c.w, c.h, 5, 5, 145, 145);
+  clearShadow();
+}
+
+// Debounced screen-reader announcement so we don't fire on every keystroke.
+var announce = (function () {
+  var t;
+  return function () {
+    clearTimeout(t);
+    t = setTimeout(function () {
+      var s = document.getElementById("canvas-status");
+      if (s) s.textContent = "Thumbnail preview updated.";
+    }, 700);
+  };
+})();
+
 function draw() {
-  //Draw Title Component
   ctx.clearRect(0, 0, editCanvas.width, editCanvas.height);
-  titleComponent.draw();
-  categoryComponent.draw();
-  backgroundComponent.draw();
-  logoComponent.draw();
+  drawTitle();
+  drawCategory();
+  drawBackground();
+  drawLogo();
+  announce();
+}
 
-  // ------- announce update for assistive tech -------
-  document.getElementById("canvas-status").textContent =
-    "Thumbnail updated " + new Date().toLocaleTimeString();
-
-  //Store to local storage. next
+// Load an image once (from a File or a URL), cache it via `assign`, then
+// redraw. Passing neither clears that image.
+function loadImage(file, urlValue, assign) {
+  if (file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        assign(img);
+        draw();
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  } else if (urlValue) {
+    var urlImg = new Image();
+    urlImg.crossOrigin = "Anonymous";
+    urlImg.onload = function () {
+      assign(urlImg);
+      draw();
+    };
+    urlImg.onerror = function () {
+      toast(
+        "Couldn't load that image URL — it may block cross-origin access. Try uploading the file instead."
+      );
+    };
+    urlImg.src = urlValue;
+  } else {
+    assign(null);
+    draw();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Color Picker
-  $("#title-color")
-    .colorpicker({
-      component: ".btn",
-    })
-    .on("changeColor", draw);
-
+  $("#title-color").colorpicker({ component: ".btn" }).on("changeColor", draw);
   $("#category-color")
-    .colorpicker({
-      component: ".btn",
-    })
+    .colorpicker({ component: ".btn" })
     .on("changeColor", draw);
 
-  // Update Events
-  document.querySelector("#title").addEventListener("keyup", draw);
-  document.querySelector("#category").addEventListener("change", draw);
-  const select = document.getElementById("category");
-  const customWrapper = document.getElementById("custom-category-wrapper");
-  const customInput = document.getElementById("custom-category");
+  // Keep the hex inputs in sync with the rgba pickers (both directions).
+  wireHex("#title-color", "#title-hex");
+  wireHex("#category-color", "#category-hex");
+
+  var titleInput = document.querySelector("#title");
+  var select = document.getElementById("category");
+  var customWrapper = document.getElementById("custom-category-wrapper");
+  var customInput = document.getElementById("custom-category");
+
+  // "input" (not "keyup") so paste, autofill, and speech input redraw too.
+  titleInput.addEventListener("input", draw);
 
   select.addEventListener("change", function () {
-    if (this.value === "__custom__") {
-      customWrapper.style.display = "block";
-    } else {
-      customWrapper.style.display = "none";
-      draw();
-    }
-  });
-
-  customInput.addEventListener("input", function () {
+    customWrapper.classList.toggle("hidden", this.value !== "__custom__");
     draw();
   });
+  customInput.addEventListener("input", draw);
 
-  document.querySelector("#background").addEventListener("change", draw);
-  document.querySelector("#logo").addEventListener("change", draw);
+  document.querySelector("#background").addEventListener("change", function () {
+    loadImage(this.files[0], null, function (img) {
+      bgImage = img;
+    });
+  });
+  document.querySelector("#logo").addEventListener("change", function () {
+    loadImage(this.files[0], null, function (img) {
+      logoImage = img;
+    });
+  });
 
-  // Any Query Params?
+  // Query params
   if (getUrlParameter("titleColor")) {
     $("#title-color").colorpicker(
       "setValue",
       "rgba(" + getUrlParameter("titleColor") + ")"
     );
   } else {
-    // Brand-correct default: cerulean (#0098db)
-    $("#title-color").colorpicker("setValue", "rgba(0,152,219,0.9)");
+    $("#title-color").colorpicker("setValue", "rgba(0,152,219,0.9)"); // cerulean
   }
   if (getUrlParameter("sidebarColor")) {
     $("#category-color").colorpicker(
@@ -320,60 +274,215 @@ document.addEventListener("DOMContentLoaded", function () {
       "rgba(" + getUrlParameter("sidebarColor") + ")"
     );
   } else {
-    // Brand-correct default: sunshade (#ffa02f)
-    $("#category-color").colorpicker("setValue", "rgba(255,160,47,0.9)");
+    $("#category-color").colorpicker("setValue", "rgba(255,160,47,0.9)"); // sunshade
   }
   if (getUrlParameter("title")) {
-    $("#title").val(getUrlParameter("title"));
+    titleInput.value = getUrlParameter("title");
   }
   if (getUrlParameter("category")) {
-    const value = getUrlParameter("category");
-    const match = Array.from(document.querySelector("#category").options).find(
-      (opt) => opt.value.toLowerCase() === value.toLowerCase()
-    );
+    var value = getUrlParameter("category");
+    var match = Array.from(select.options).find(function (opt) {
+      return opt.value.toLowerCase() === value.toLowerCase();
+    });
     if (match) {
       match.selected = true;
     } else {
-      document.querySelector("#category").value = "__custom__";
-      customWrapper.style.display = "block";
+      select.value = "__custom__";
+      customWrapper.classList.remove("hidden");
       customInput.value = value;
     }
   }
-
   if (getUrlParameter("background")) {
-    $("#background-url").val(getUrlParameter("background"));
+    document.querySelector("#background-url").value =
+      getUrlParameter("background");
+    loadImage(null, getUrlParameter("background"), function (img) {
+      bgImage = img;
+    });
   }
   if (getUrlParameter("logo")) {
-    $("#logo-url").val(getUrlParameter("logo"));
+    document.querySelector("#logo-url").value = getUrlParameter("logo");
+    loadImage(null, getUrlParameter("logo"), function (img) {
+      logoImage = img;
+    });
   }
 
-  // Select Dropdowns to Material Styles
-  var elems = document.querySelectorAll("select");
-  var instances = M.FormSelect.init(elems);
+  M.FormSelect.init(document.querySelectorAll("select"));
+  M.updateTextFields(); // float labels for any prefilled inputs
 
   draw();
 
+  // Download — filename derived from the title (Title_thumbnail.png)
   document
     .querySelector("#download-image")
     .addEventListener("click", function (e) {
-      // Point the link at the current canvas image; the anchor's own
-      // download attribute saves the file (works for mouse and keyboard).
       try {
         this.href = editCanvas.toDataURL("image/png");
+        this.download = downloadName("thumbnail");
       } catch (err) {
-        // A cross-origin background/logo loaded by URL without CORS headers
-        // taints the canvas and blocks export. Tell the user how to recover.
+        // A cross-origin background/logo without CORS headers taints the
+        // canvas and blocks export. Tell the user how to recover.
         e.preventDefault();
-        var msg =
-          "Couldn't export the image. If you set a background or logo by URL, upload the file instead.";
-        if (window.M && M.toast) {
-          M.toast({ html: msg, displayLength: 6000 });
-        } else {
-          alert(msg);
-        }
+        toast(
+          "Couldn't export the image. If you set a background or logo by URL, upload the file instead."
+        );
       }
     });
+
+  // Copy a shareable link that reproduces the current text/colors/category
+  // (and any image URLs — uploaded files can't travel in a URL).
+  var copyBtn = document.querySelector("#copy-link");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      var url = buildShareUrl();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(
+          function () {
+            toast("Shareable link copied to clipboard.");
+          },
+          function () {
+            promptCopy(url);
+          }
+        );
+      } else {
+        promptCopy(url);
+      }
+    });
+  }
+
+  // Reset everything back to brand defaults
+  var resetBtn = document.querySelector("#reset");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", function () {
+      titleInput.value = "";
+      select.value = select.options[0].value;
+      customWrapper.classList.add("hidden");
+      customInput.value = "";
+      M.FormSelect.init(select);
+      $("#title-color").colorpicker("setValue", "rgba(0,152,219,0.9)");
+      $("#category-color").colorpicker("setValue", "rgba(255,160,47,0.9)");
+      document.querySelector("#background").value = "";
+      document.querySelector("#background-url").value = "";
+      document.querySelector("#logo").value = "";
+      document.querySelector("#logo-url").value = "";
+      document.querySelectorAll(".file-path").forEach(function (i) {
+        i.value = "";
+      });
+      bgImage = null;
+      logoImage = null;
+      M.updateTextFields();
+      draw();
+    });
+  }
 });
+
+// ---- Hex <-> rgba helpers ----
+
+function rgbaToHex(value) {
+  var m = /rgba?\(([^)]+)\)/.exec(value || "");
+  if (m) {
+    var p = m[1].split(",");
+    return "#" + hx(p[0]) + hx(p[1]) + hx(p[2]);
+  }
+  var h = /^#?([0-9a-f]{6})$/i.exec((value || "").trim());
+  return h ? "#" + h[1].toLowerCase() : "";
+}
+
+function hx(n) {
+  n = Math.max(0, Math.min(255, parseInt(n, 10) || 0));
+  return ("0" + n.toString(16)).slice(-2);
+}
+
+// Apply a #rrggbb hex to a picker, preserving its current alpha.
+function setPickerFromHex(pickerSel, hex) {
+  hex = (hex || "").replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(hex)) return;
+  var cur = $(pickerSel).colorpicker("getValue");
+  var am = /rgba?\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/.exec(cur || "");
+  var alpha = am ? am[1] : "1";
+  var n = parseInt(hex, 16);
+  $(pickerSel).colorpicker(
+    "setValue",
+    "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + alpha + ")"
+  );
+}
+
+function wireHex(pickerSel, hexSel) {
+  var hexEl = document.querySelector(hexSel);
+  if (!hexEl) return;
+  $(pickerSel).on("changeColor", function () {
+    if (document.activeElement !== hexEl) {
+      hexEl.value = rgbaToHex($(pickerSel).colorpicker("getValue"));
+    }
+  });
+  hexEl.addEventListener("input", function () {
+    setPickerFromHex(pickerSel, this.value);
+  });
+}
+
+// Build "Title_thumbnail.png" style filename from the current title.
+function downloadName(suffix) {
+  var t = (document.querySelector("#title").value || "").trim();
+  var safe = t
+    .replace(/[^\w-]+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  return (safe ? safe + "_" : "") + suffix + ".png";
+}
+
+function buildShareUrl() {
+  var params = new URLSearchParams();
+  var title = document.querySelector("#title").value;
+  if (title) params.set("title", title);
+
+  var tc = rgbaToParam($("#title-color").colorpicker("getValue"));
+  if (tc) params.set("titleColor", tc);
+  var sc = rgbaToParam($("#category-color").colorpicker("getValue"));
+  if (sc) params.set("sidebarColor", sc);
+
+  var selected = document.querySelector("#category").value;
+  var category =
+    selected === "__custom__"
+      ? document.querySelector("#custom-category").value
+      : selected;
+  if (category) params.set("category", category);
+
+  var bgUrl = document.querySelector("#background-url").value;
+  if (bgUrl) params.set("background", bgUrl);
+  var logoUrl = document.querySelector("#logo-url").value;
+  if (logoUrl) params.set("logo", logoUrl);
+
+  return location.origin + location.pathname + "?" + params.toString();
+}
+
+// Normalize a colorpicker value ("rgba(0, 152, 219, 0.9)" or "#0098db")
+// into the "r,g,b[,a]" form the query params expect.
+function rgbaToParam(value) {
+  if (!value) return "";
+  var m = /rgba?\(([^)]+)\)/.exec(value);
+  if (m) {
+    return m[1]
+      .split(",")
+      .map(function (s) {
+        return s.trim();
+      })
+      .join(",");
+  }
+  var hex = /^#?([0-9a-f]{6})$/i.exec(value.trim());
+  if (hex) {
+    var n = parseInt(hex[1], 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(",");
+  }
+  return "";
+}
+
+function toast(msg) {
+  if (window.M && M.toast) M.toast({ html: msg, displayLength: 5000 });
+  else alert(msg);
+}
+
+function promptCopy(url) {
+  window.prompt("Copy this shareable link:", url);
+}
 
 // Helper function to get URL Query Params
 function getUrlParameter(name) {

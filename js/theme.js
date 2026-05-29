@@ -24,6 +24,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Keep other already-open tabs/pages in sync when the theme changes.
+  window.addEventListener("storage", function (e) {
+    if (e.key !== "theme") return;
+    var dark = e.newValue === "dark";
+    root.classList.toggle("dark-mode", dark);
+    updateIcons(dark);
+  });
+
   function updateIcons(dark) {
     toggles.forEach(function (btn) {
       var icon = btn.querySelector(".material-icons");

@@ -17,7 +17,9 @@
   --accent: #0098db;
 }
 .dark-mode nav {
-  background-color: var(--accent) !important;
+  /* --primary (#0073a6) gives white nav text ~5.2:1 — AA pass.
+     --accent (#0098db) would only be ~3.2:1. */
+  background-color: var(--primary) !important;
 }
 .dark-mode nav .nav-wrapper .brand-logo,
 .dark-mode nav .nav-wrapper a {
@@ -109,6 +111,12 @@ h2:first-of-type {
   width: 80% !important;
 }
 
+/* Optional hex entry next to each rgba color picker */
+.hex-input {
+  width: 110px !important;
+  margin: 6px 0 0;
+}
+
 /* Default swatch colors are brand-correct so the canvas looks right on
    first load: cerulean title bar (#0098db), sunshade sidebar (#ffa02f). */
 #title-color .btn {
@@ -167,6 +175,34 @@ nav {
 /* Download button override */
 #download-image {
   background-color: var(--accent) !important;
+}
+
+/* Secondary actions (Copy link, Reset) — flat, themed for both modes */
+.btn-flat {
+  color: var(--fg);
+}
+.dark-mode .btn-flat:hover,
+.dark-mode .btn-flat:focus {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Action button group below the canvas */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Helper text margins (was inline styles) */
+.field-hint {
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+/* Generic hide utility (toggled by JS for the custom-category field) */
+.hidden {
+  display: none !important;
 }
 
 /* Visible focus outline for keyboard users */

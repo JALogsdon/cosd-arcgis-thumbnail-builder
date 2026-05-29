@@ -17,6 +17,9 @@
         } catch (e) {}
       })();
     </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
@@ -86,19 +89,7 @@
             ></p>
           </div>
 
-          <div class="row">
-            <label class="color-label" for="title-color-input"
-              >Title bar color</label
-            >
-            <div id="title-color" class="file-field">
-              <div class="btn color-icon"></div>
-              <div class="file-path-wrapper">
-                <input type="text" class="color-input" id="title-color-input" />
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
+          <div class="row btn-row">
             <a
               id="download-image"
               href="#"
@@ -106,6 +97,12 @@
               class="waves-effect waves-light btn"
               ><i class="material-icons left">save</i>Download</a
             >
+            <button id="copy-link" type="button" class="waves-effect btn-flat">
+              <i class="material-icons left">link</i>Copy link
+            </button>
+            <button id="reset" type="button" class="waves-effect btn-flat">
+              <i class="material-icons left">refresh</i>Reset
+            </button>
           </div>
         </div>
 
@@ -121,14 +118,34 @@
                 name="title"
               />
             </div>
+            <div class="col s12">
+              <label class="color-label" for="title-color-input"
+                >Title bar color</label
+              >
+              <div id="title-color" class="file-field">
+                <div class="btn color-icon"></div>
+                <div class="file-path-wrapper">
+                  <input
+                    type="text"
+                    class="color-input"
+                    id="title-color-input"
+                  />
+                </div>
+              </div>
+              <input
+                type="text"
+                class="hex-input"
+                id="title-hex"
+                maxlength="7"
+                placeholder="#0098db"
+                aria-label="Title bar color hex code"
+              />
+            </div>
           </div>
 
           <div class="row">
             <h2>Background Image</h2>
-            <p
-              class="grey-text text-darken-1"
-              style="margin-top: -10px; margin-bottom: 20px"
-            >
+            <p class="grey-text text-darken-1 field-hint">
               Recommended: 400x400 pixels or larger (1:1 aspect ratio). PNG,
               JPEG, or GIF.
             </p>
@@ -155,10 +172,7 @@
 
           <div class="row">
             <h2>Logo Image</h2>
-            <p
-              class="grey-text text-darken-1"
-              style="margin-top: -10px; margin-bottom: 20px"
-            >
+            <p class="grey-text text-darken-1 field-hint">
               Recommended: 120x120 pixels or larger (1:1 aspect ratio). PNG,
               JPEG, or GIF.
             </p>
