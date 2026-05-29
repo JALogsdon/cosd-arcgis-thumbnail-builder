@@ -3,7 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ArcGIS Thumbnail Builder</title>
+    <title>Thumbnail Builder — City of San Diego GIS</title>
+    <link rel="icon" href="./img/logo/cosd_logo.png" />
+    <!-- Apply the saved theme before paint to avoid a flash of the wrong theme -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          var dark = t
+            ? t === "dark"
+            : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.classList.add("dark-mode");
+        } catch (e) {}
+      })();
+    </script>
     <!-- Compiled and minified CSS -->
     <link
       rel="stylesheet"

@@ -3,7 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ArcGIS Group Thumbnail Builder</title>
+    <title>Group Thumbnail — City of San Diego GIS</title>
+    <link rel="icon" href="./img/logo/cosd_logo.png" />
+    <!-- Apply the saved theme before paint to avoid a flash of the wrong theme -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          var dark = t
+            ? t === "dark"
+            : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.classList.add("dark-mode");
+        } catch (e) {}
+      })();
+    </script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
@@ -74,10 +87,13 @@
           </div>
 
           <div class="row">
+            <label class="color-label" for="title-color-input"
+              >Title bar color</label
+            >
             <div id="title-color" class="file-field">
               <div class="btn color-icon"></div>
               <div class="file-path-wrapper">
-                <input type="text" class="color-input" />
+                <input type="text" class="color-input" id="title-color-input" />
               </div>
             </div>
           </div>
@@ -127,7 +143,11 @@
                   <input type="file" id="background" />
                 </div>
                 <div class="file-path-wrapper">
-                  <input class="file-path validate" type="text" />
+                  <input
+                    class="file-path validate"
+                    type="text"
+                    aria-label="Selected background file"
+                  />
                 </div>
               </div>
             </div>
@@ -153,7 +173,11 @@
                   <input type="file" id="logo" />
                 </div>
                 <div class="file-path-wrapper">
-                  <input class="file-path validate" type="text" />
+                  <input
+                    class="file-path validate"
+                    type="text"
+                    aria-label="Selected logo file"
+                  />
                 </div>
               </div>
             </div>

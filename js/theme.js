@@ -9,18 +9,16 @@ document.addEventListener("DOMContentLoaded", function () {
   var toggles = document.querySelectorAll("[data-theme-toggle]");
   if (!toggles.length) return;
 
-  // Initialize from localStorage, falling back to system preference
-  var stored = localStorage.getItem("theme");
-  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  var useDark = stored ? stored === "dark" : prefersDark;
-
-  if (useDark) document.body.classList.add("dark-mode");
-  updateIcons(useDark);
+  // The inline <head> script already applied the saved/system theme to
+  // <html> before paint (no flash). Here we just sync the icons and wire
+  // up the toggles.
+  var root = document.documentElement;
+  updateIcons(root.classList.contains("dark-mode"));
 
   toggles.forEach(function (btn) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      var nowDark = document.body.classList.toggle("dark-mode");
+      var nowDark = root.classList.toggle("dark-mode");
       localStorage.setItem("theme", nowDark ? "dark" : "light");
       updateIcons(nowDark);
     });

@@ -310,12 +310,18 @@ document.addEventListener("DOMContentLoaded", function () {
       "setValue",
       "rgba(" + getUrlParameter("titleColor") + ")"
     );
+  } else {
+    // Brand-correct default: cerulean (#0098db)
+    $("#title-color").colorpicker("setValue", "rgba(0,152,219,0.9)");
   }
   if (getUrlParameter("sidebarColor")) {
     $("#category-color").colorpicker(
       "setValue",
       "rgba(" + getUrlParameter("sidebarColor") + ")"
     );
+  } else {
+    // Brand-correct default: sunshade (#ffa02f)
+    $("#category-color").colorpicker("setValue", "rgba(255,160,47,0.9)");
   }
   if (getUrlParameter("title")) {
     $("#title").val(getUrlParameter("title"));
@@ -349,10 +355,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document
     .querySelector("#download-image")
-    .addEventListener("click", function () {
+    .addEventListener("click", function (e) {
       // Point the link at the current canvas image; the anchor's own
       // download attribute saves the file (works for mouse and keyboard).
-      this.href = editCanvas.toDataURL("image/png");
+      try {
+        this.href = editCanvas.toDataURL("image/png");
+      } catch (err) {
+        // A cross-origin background/logo loaded by URL without CORS headers
+        // taints the canvas and blocks export. Tell the user how to recover.
+        e.preventDefault();
+        var msg =
+          "Couldn't export the image. If you set a background or logo by URL, upload the file instead.";
+        if (window.M && M.toast) {
+          M.toast({ html: msg, displayLength: 6000 });
+        } else {
+          alert(msg);
+        }
+      }
     });
 });
 

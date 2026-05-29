@@ -9,33 +9,33 @@
   --accent: #0073a6;
 }
 
-body.dark-mode {
+.dark-mode {
   --bg: #1e1e1e;
   --fg: #e0e0e0;
   --surface: #2a2a2a;
   --primary: #0073a6;
   --accent: #0098db;
 }
-body.dark-mode nav {
+.dark-mode nav {
   background-color: var(--accent) !important;
 }
-body.dark-mode nav .nav-wrapper .brand-logo,
-body.dark-mode nav .nav-wrapper a {
+.dark-mode nav .nav-wrapper .brand-logo,
+.dark-mode nav .nav-wrapper a {
   color: #ffffff !important;
 }
-body.dark-mode .card {
+.dark-mode .card {
   background-color: var(--surface) !important;
 }
-body.dark-mode .card-content p {
+.dark-mode .card-content p {
   color: #ffffff !important;
 }
-body.dark-mode canvas {
+.dark-mode canvas {
   border-color: #555;
 }
-body.dark-mode .sidenav {
+.dark-mode .sidenav {
   background-color: var(--surface);
 }
-body.dark-mode .sidenav a {
+.dark-mode .sidenav a {
   color: var(--fg);
 }
 
@@ -109,12 +109,22 @@ h2:first-of-type {
   width: 80% !important;
 }
 
+/* Default swatch colors are brand-correct so the canvas looks right on
+   first load: cerulean title bar (#0098db), sunshade sidebar (#ffa02f). */
 #title-color .btn {
-  background-color: rgba(0, 255, 0, 0.8);
+  background-color: rgba(0, 152, 219, 0.9);
 }
 
 #category-color .btn {
-  background-color: rgba(0, 0, 255, 0.8);
+  background-color: rgba(255, 160, 47, 0.9);
+}
+
+/* Caption above each color picker so its purpose is obvious */
+.color-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--fg);
 }
 
 .brand-logo {
