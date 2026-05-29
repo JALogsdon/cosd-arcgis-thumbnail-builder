@@ -8,13 +8,27 @@
     <!-- Apply the saved theme before paint to avoid a flash of the wrong theme -->
     <script>
       (function () {
+        // Resolve theme: URL ?theme= wins (works even where localStorage is
+        // isolated/blocked, e.g. Firefox opening files via file://), then the
+        // saved theme, then the system preference.
+        var dark = false,
+          p = null;
         try {
-          var t = localStorage.getItem("theme");
-          var dark = t
-            ? t === "dark"
-            : window.matchMedia("(prefers-color-scheme: dark)").matches;
-          if (dark) document.documentElement.classList.add("dark-mode");
+          p = new URLSearchParams(location.search).get("theme");
         } catch (e) {}
+        if (p === "dark") dark = true;
+        else if (p === "light") dark = false;
+        else {
+          try {
+            var stored = localStorage.getItem("theme");
+            dark = stored
+              ? stored === "dark"
+              : window.matchMedia("(prefers-color-scheme: dark)").matches;
+          } catch (e) {
+            dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          }
+        }
+        if (dark) document.documentElement.classList.add("dark-mode");
       })();
     </script>
 
