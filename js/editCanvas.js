@@ -132,11 +132,13 @@ function drawCategory() {
   if (!text) return;
 
   ctx.save();
-  ctx.translate(524, 200);
+  // Pivot at the sidebar's center (x 500–600 → 550, y center 200); "middle"
+  // baseline so the rotated text is centered across the bar's width.
+  ctx.translate(550, 200);
   ctx.rotate(-0.5 * Math.PI);
   ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
   ctx.textAlign = "center";
-  ctx.textBaseline = "alphabetic";
+  ctx.textBaseline = "middle";
   // Shrink to fit along the sidebar's length (the canvas height, ~360 usable).
   var size = 48;
   while (size > 16) {
