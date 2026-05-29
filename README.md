@@ -33,9 +33,9 @@ A simple web app for creating thumbnails for ArcGIS Online content using HTML5 C
 
 ## Query Parameters
 
-Both `viewer.html` (item thumbnails) and `group.html` (group thumbnails) support URL query parameters for preconfiguration.
+Both `index.html` (item thumbnails) and `group.html` (group thumbnails) support URL query parameters for preconfiguration. (The old `viewer.html` path still works — it redirects to `index.html`.)
 
-### Item Thumbnail (`viewer.html`)
+### Item Thumbnail (`index.html`)
 
 | Parameter      | Description          | Values    | Example                          |
 | -------------- | -------------------- | --------- | -------------------------------- |
@@ -49,7 +49,7 @@ Both `viewer.html` (item thumbnails) and `group.html` (group thumbnails) support
 **Example URL:**
 
 ```url
-https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/viewer.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,160,47,0.9
+https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/index.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,160,47,0.9
 ```
 
 ### Group Thumbnail (`group.html`)
