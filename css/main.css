@@ -138,6 +138,13 @@ canvas {
   }
 }
 
+/* Clear breathing room between the rail panel and the preview on desktop */
+@media (min-width: 993px) {
+  .template-rail + .col {
+    padding-left: 2rem;
+  }
+}
+
 h2:first-of-type {
   margin-top: 25px;
 }
