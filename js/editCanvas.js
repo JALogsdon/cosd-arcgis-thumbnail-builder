@@ -11,6 +11,15 @@ var ctx = editCanvas.getContext("2d");
 var bgImage = null;
 var logoImage = null;
 
+// City of San Diego theme — loaded by default when the page opens with no
+// query params (absolute URLs so they resolve the same locally and live).
+var DEFAULTS = {
+  title: "San Diego Geospatial Services",
+  background:
+    "https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/cosd_background.png",
+  logo: "https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/cosd_logo.png",
+};
+
 function setShadow() {
   ctx.shadowColor = "black";
   ctx.shadowBlur = 10;
@@ -216,7 +225,7 @@ function loadImage(file, urlValue, assign) {
     };
     urlImg.onerror = function () {
       toast(
-        "Couldn't load that image URL — it may block cross-origin access. Try uploading the file instead."
+        "Couldn't load that image URL — it may block cross-origin access. Try uploading the file instead.",
       );
     };
     urlImg.src = urlValue;
@@ -265,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (getUrlParameter("titleColor")) {
     $("#title-color").colorpicker(
       "setValue",
-      "rgba(" + getUrlParameter("titleColor") + ")"
+      "rgba(" + getUrlParameter("titleColor") + ")",
     );
   } else {
     $("#title-color").colorpicker("setValue", "rgba(0,152,219,0.9)"); // cerulean
@@ -273,13 +282,15 @@ document.addEventListener("DOMContentLoaded", function () {
   if (getUrlParameter("sidebarColor")) {
     $("#category-color").colorpicker(
       "setValue",
-      "rgba(" + getUrlParameter("sidebarColor") + ")"
+      "rgba(" + getUrlParameter("sidebarColor") + ")",
     );
   } else {
     $("#category-color").colorpicker("setValue", "rgba(255,160,47,0.9)"); // sunshade
   }
   if (getUrlParameter("title")) {
     titleInput.value = getUrlParameter("title");
+  } else {
+    titleInput.value = DEFAULTS.title;
   }
   if (getUrlParameter("category")) {
     var value = getUrlParameter("category");
@@ -300,10 +311,20 @@ document.addEventListener("DOMContentLoaded", function () {
     loadImage(null, getUrlParameter("background"), function (img) {
       bgImage = img;
     });
+  } else {
+    document.querySelector("#background-url").value = DEFAULTS.background;
+    loadImage(null, DEFAULTS.background, function (img) {
+      bgImage = img;
+    });
   }
   if (getUrlParameter("logo")) {
     document.querySelector("#logo-url").value = getUrlParameter("logo");
     loadImage(null, getUrlParameter("logo"), function (img) {
+      logoImage = img;
+    });
+  } else {
+    document.querySelector("#logo-url").value = DEFAULTS.logo;
+    loadImage(null, DEFAULTS.logo, function (img) {
       logoImage = img;
     });
   }
@@ -325,7 +346,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // canvas and blocks export. Tell the user how to recover.
         e.preventDefault();
         toast(
-          "Couldn't export the image. If you set a background or logo by URL, upload the file instead."
+          "Couldn't export the image. If you set a background or logo by URL, upload the file instead.",
         );
       }
     });
@@ -343,7 +364,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           function () {
             promptCopy(url);
-          }
+          },
         );
       } else {
         promptCopy(url);
@@ -404,7 +425,15 @@ function setPickerFromHex(pickerSel, hex) {
   var n = parseInt(hex, 16);
   $(pickerSel).colorpicker(
     "setValue",
-    "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + alpha + ")"
+    "rgba(" +
+      ((n >> 16) & 255) +
+      "," +
+      ((n >> 8) & 255) +
+      "," +
+      (n & 255) +
+      "," +
+      alpha +
+      ")",
   );
 }
 

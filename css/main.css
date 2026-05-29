@@ -94,6 +94,8 @@ p.fine {
 /* Keep the editor compact and centered instead of sprawling on wide screens */
 main.container {
   max-width: 1200px;
+  /* Buffer so the builder sits a little below the top banner */
+  padding-top: 1.5rem;
 }
 
 canvas {
@@ -109,12 +111,13 @@ canvas {
   aspect-ratio: 1 / 1;
 }
 
-/* Template rail: a sticky, scrollable panel of starting points */
+/* Template rail: a sticky panel whose heading stays put while cards scroll */
 .template-rail {
   position: sticky;
   top: 80px;
   max-height: calc(100vh - 96px);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   background: var(--surface);
   border-radius: 8px;
   padding: 12px 12px 4px;
@@ -122,18 +125,28 @@ canvas {
 .template-rail .rail-title {
   margin-top: 0;
 }
+/* Only the card list scrolls; "Templates" and the intro stay fixed above it */
+.rail-cards {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
 .template-rail .card {
   margin: 8px 0 16px;
 }
+/* Show the full template preview rather than cropping it */
 .template-rail .card-image img {
-  height: 130px;
-  object-fit: cover;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 /* On phones/tablets the rail just stacks above the builder */
 @media (max-width: 992px) {
   .template-rail {
     position: static;
     max-height: none;
+  }
+  .rail-cards {
     overflow: visible;
   }
 }
