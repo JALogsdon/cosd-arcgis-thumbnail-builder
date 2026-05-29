@@ -84,16 +84,13 @@
     </ul>
 
     <main id="main" class="container">
-      <!-- Templates at the top so a starting point is the first thing you see -->
       <div class="row">
-        <h2>Group Thumbnails (400&times;400)</h2>
-        <p class="grey-text text-darken-1">
-          Pick a brand template to start — it loads into the builder below,
-          where you can customize it.
-        </p>
-      </div>
-      <div class="row">
-        <div class="col s12 m4">
+        <!-- Template rail: pick a starting point -->
+        <aside class="col s12 m3 template-rail">
+          <h2 class="rail-title">Templates</h2>
+          <p class="grey-text text-darken-1">
+            Pick one to load it into the builder.
+          </p>
           <div class="card">
             <div class="card-image">
               <img
@@ -106,8 +103,6 @@
               <a href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/cosd_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/cosd_logo.png&title=San%20Diego%20Geospatial%20Services&titleColor=0,152,219,0.9">Use this template</a>
             </div>
           </div>
-        </div>
-        <div class="col s12 m4">
           <div class="card">
             <div class="card-image">
               <img
@@ -120,8 +115,6 @@
               <a href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/swd_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/swd_logo.png&title=Stormwater%20Geospatial%20Services&titleColor=0,152,219,0.9">Use this template</a>
             </div>
           </div>
-        </div>
-        <div class="col s12 m4">
           <div class="card">
             <div class="card-image">
               <img
@@ -134,130 +127,136 @@
               <a href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/tsd_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/tsd_logo.png&title=Transportation%20Geospatial%20Services&titleColor=70,151,172,0.9">Use this template</a>
             </div>
           </div>
-        </div>
-      </div>
+        </aside>
 
-      <!-- Builder -->
-      <div class="row">
-        <div class="col m6 s12">
+        <!-- Builder -->
+        <div class="col s12 m9">
           <div class="row">
-            <canvas
-              id="group-canvas"
-              role="img"
-              aria-label="Live preview of your group thumbnail (400 x 400 pixels)"
-            >
-              Live preview of your group thumbnail (400 x 400 pixels)
-            </canvas>
-            <p
-              id="canvas-status"
-              class="visually-hidden"
-              aria-live="polite"
-            ></p>
-          </div>
+            <div class="col m6 s12">
+              <div class="row">
+                <canvas
+                  id="group-canvas"
+                  role="img"
+                  aria-label="Live preview of your group thumbnail (400 x 400 pixels)"
+                >
+                  Live preview of your group thumbnail (400 x 400 pixels)
+                </canvas>
+                <p
+                  id="canvas-status"
+                  class="visually-hidden"
+                  aria-live="polite"
+                ></p>
+              </div>
 
-          <div class="row btn-row">
-            <a
-              id="download-image"
-              href="#"
-              download="group-thumbnail.png"
-              class="waves-effect waves-light btn"
-              ><i class="material-icons left">save</i>Download</a
-            >
-            <button id="copy-link" type="button" class="waves-effect btn-flat">
-              <i class="material-icons left">link</i>Copy link
-            </button>
-            <button id="reset" type="button" class="waves-effect btn-flat">
-              <i class="material-icons left">refresh</i>Reset
-            </button>
-          </div>
-        </div>
-
-        <div class="col m6 s12">
-          <div class="row">
-            <h2>Title</h2>
-            <div class="input-field col s12">
-              <label for="title" class="visually-hidden">Group title</label>
-              <input
-                placeholder="e.g., Stormwater GIS Team"
-                type="text"
-                id="title"
-                name="title"
-              />
+              <div class="row btn-row">
+                <a
+                  id="download-image"
+                  href="#"
+                  download="group-thumbnail.png"
+                  class="waves-effect waves-light btn"
+                  ><i class="material-icons left">save</i>Download</a
+                >
+                <button
+                  id="copy-link"
+                  type="button"
+                  class="waves-effect btn-flat"
+                >
+                  <i class="material-icons left">link</i>Copy link
+                </button>
+                <button id="reset" type="button" class="waves-effect btn-flat">
+                  <i class="material-icons left">refresh</i>Reset
+                </button>
+              </div>
             </div>
-            <div class="col s12">
-              <label class="color-label" for="title-color-input"
-                >Title bar color</label
-              >
-              <div id="title-color" class="file-field">
-                <div class="btn color-icon"></div>
-                <div class="file-path-wrapper">
+
+            <div class="col m6 s12">
+              <div class="row">
+                <h2>Title</h2>
+                <div class="input-field col s12">
+                  <label for="title" class="visually-hidden">Group title</label>
+                  <input
+                    placeholder="e.g., Stormwater GIS Team"
+                    type="text"
+                    id="title"
+                    name="title"
+                  />
+                </div>
+                <div class="col s12">
+                  <label class="color-label" for="title-color-input"
+                    >Title bar color</label
+                  >
+                  <div id="title-color" class="file-field">
+                    <div class="btn color-icon"></div>
+                    <div class="file-path-wrapper">
+                      <input
+                        type="text"
+                        class="color-input"
+                        id="title-color-input"
+                      />
+                    </div>
+                  </div>
                   <input
                     type="text"
-                    class="color-input"
-                    id="title-color-input"
+                    class="hex-input"
+                    id="title-hex"
+                    maxlength="7"
+                    placeholder="#0098db"
+                    aria-label="Title bar color hex code"
                   />
                 </div>
               </div>
-              <input
-                type="text"
-                class="hex-input"
-                id="title-hex"
-                maxlength="7"
-                placeholder="#0098db"
-                aria-label="Title bar color hex code"
-              />
-            </div>
-          </div>
 
-          <div class="row">
-            <h2>Background Image</h2>
-            <p class="grey-text text-darken-1 field-hint">
-              Recommended: 400x400 pixels or larger (1:1 aspect ratio). PNG,
-              JPEG, or GIF.
-            </p>
-            <input type="hidden" id="background-url" />
-            <div class="input-field col s12">
-              <div class="file-field input-field">
-                <div class="btn">
-                  <span>File</span>
-                  <label for="background" class="visually-hidden"
-                    >Upload background image</label
-                  >
-                  <input type="file" id="background" />
-                </div>
-                <div class="file-path-wrapper">
-                  <input
-                    class="file-path validate"
-                    type="text"
-                    aria-label="Selected background file"
-                  />
+              <div class="row">
+                <h2>Background Image</h2>
+                <p class="grey-text text-darken-1 field-hint">
+                  Recommended: 400x400 pixels or larger (1:1 aspect ratio). PNG,
+                  JPEG, or GIF.
+                </p>
+                <input type="hidden" id="background-url" />
+                <div class="input-field col s12">
+                  <div class="file-field input-field">
+                    <div class="btn">
+                      <span>File</span>
+                      <label for="background" class="visually-hidden"
+                        >Upload background image</label
+                      >
+                      <input type="file" id="background" />
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input
+                        class="file-path validate"
+                        type="text"
+                        aria-label="Selected background file"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div class="row">
-            <h2>Logo Image</h2>
-            <p class="grey-text text-darken-1 field-hint">
-              Recommended: 120x120 pixels or larger (1:1 aspect ratio). PNG,
-              JPEG, or GIF.
-            </p>
-            <input type="hidden" id="logo-url" />
-            <div class="input-field col s12">
-              <div class="file-field input-field">
-                <div class="btn">
-                  <span>File</span>
-                  <label for="logo" class="visually-hidden"
-                    >Upload logo image</label
-                  >
-                  <input type="file" id="logo" />
-                </div>
-                <div class="file-path-wrapper">
-                  <input
-                    class="file-path validate"
-                    type="text"
-                    aria-label="Selected logo file"
-                  />
+              <div class="row">
+                <h2>Logo Image</h2>
+                <p class="grey-text text-darken-1 field-hint">
+                  Recommended: 120x120 pixels or larger (1:1 aspect ratio). PNG,
+                  JPEG, or GIF.
+                </p>
+                <input type="hidden" id="logo-url" />
+                <div class="input-field col s12">
+                  <div class="file-field input-field">
+                    <div class="btn">
+                      <span>File</span>
+                      <label for="logo" class="visually-hidden"
+                        >Upload logo image</label
+                      >
+                      <input type="file" id="logo" />
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input
+                        class="file-path validate"
+                        type="text"
+                        aria-label="Selected logo file"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

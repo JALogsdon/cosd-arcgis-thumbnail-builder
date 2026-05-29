@@ -92,15 +92,39 @@ p.fine {
 
 /* Canvas and container resets */
 canvas {
-  height: 233px;
-  width: 350px;
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  aspect-ratio: 3 / 2;
   border: 1px solid black;
   margin-top: 25px;
 }
 
 #group-canvas {
-  height: 300px;
-  width: 300px;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+}
+
+/* Template rail: a sticky, scrollable column of starting points */
+.template-rail {
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.template-rail .rail-title {
+  margin-top: 0;
+}
+.template-rail .card {
+  margin: 8px 0 16px;
+}
+/* On phones/tablets the rail just stacks above the builder */
+@media (max-width: 992px) {
+  .template-rail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
 }
 
 h2:first-of-type {
