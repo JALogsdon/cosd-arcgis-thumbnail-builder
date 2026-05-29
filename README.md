@@ -20,7 +20,7 @@ A simple web app for creating thumbnails for ArcGIS Online content using HTML5 C
 ## Image Guidelines
 
 ### Item Thumbnails (600x400)
-- **Output canvas:** 600x400 px (1.5:1)
+- **Output canvas:** 600x400 px (3:2 / 1.5:1)
 - **Background:** cropped to 1.5:1, then scaled to fill 600x400
 - **Logo:** cropped to 1:1 and drawn at 145x145 px; transparent PNG recommended
 

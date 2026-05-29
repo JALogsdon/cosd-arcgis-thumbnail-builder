@@ -252,6 +252,12 @@ select:focus {
   color: var(--accent);
 }
 
+/* Home landing cards: normalize the two preview images to one height */
+.home-card .card-image img {
+  height: 180px;
+  object-fit: cover;
+}
+
 /* Helper text (background/logo instructions) */
 .row p.grey-text.text-darken-1 {
   color: var(--fg) !important;
