@@ -139,12 +139,17 @@ function drawBackground() {
 
 function drawLogo() {
   if (!logoImage) return;
-  var c = coverCrop(logoImage, 1); // square
+  // Fit the whole logo inside a 120px box (no cropping), anchored top-left,
+  // so non-square brand lockups keep their real proportions.
+  var box = 120;
+  var scale = Math.min(box / logoImage.width, box / logoImage.height);
+  var w = logoImage.width * scale;
+  var h = logoImage.height * scale;
   ctx.shadowColor = "black";
   ctx.shadowBlur = 5;
   ctx.shadowOffsetX = 3;
   ctx.shadowOffsetY = 3;
-  ctx.drawImage(logoImage, c.x, c.y, c.w, c.h, 5, 5, 120, 120);
+  ctx.drawImage(logoImage, 5, 5, w, h);
   clearShadow();
 }
 
