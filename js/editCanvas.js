@@ -20,189 +20,6 @@ var DEFAULTS = {
   logo: "https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/cosd_logo.png",
 };
 
-function setShadow() {
-  ctx.shadowColor = "black";
-  ctx.shadowBlur = 10;
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 3;
-}
-
-function clearShadow() {
-  ctx.shadowColor = "transparent";
-  ctx.shadowBlur = 0;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
-}
-
-// Trace a rounded rectangle path (caller fills/strokes it).
-function roundRect(x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-}
-
-// Center-crop a source image to a target aspect ratio (width / height).
-function coverCrop(img, aspectTarget) {
-  var sw = img.width;
-  var sh = img.height;
-  var sa = sw / sh;
-  var w = sw;
-  var h = sh;
-  var x = 0;
-  var y = 0;
-  if (sa > aspectTarget) {
-    w = sh * aspectTarget;
-    x = (sw - w) / 2;
-  } else if (sa < aspectTarget) {
-    h = sw / aspectTarget;
-    y = (sh - h) / 2;
-  }
-  return { x: x, y: y, w: w, h: h };
-}
-
-// Wrap text to maxWidth, hard-breaking any single word that is itself
-// wider than maxWidth (so long unbroken strings can't overflow sideways).
-function wrapLines(context, text, maxWidth) {
-  var lines = [];
-  var words = text.split(/\s+/).filter(Boolean);
-  var line = "";
-  for (var i = 0; i < words.length; i++) {
-    var word = words[i];
-    while (context.measureText(word).width > maxWidth && word.length > 1) {
-      var k = 1;
-      while (
-        k < word.length &&
-        context.measureText(word.slice(0, k + 1)).width <= maxWidth
-      ) {
-        k++;
-      }
-      if (line) {
-        lines.push(line);
-        line = "";
-      }
-      lines.push(word.slice(0, k));
-      word = word.slice(k);
-    }
-    var test = line ? line + " " + word : word;
-    if (context.measureText(test).width > maxWidth && line) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = test;
-    }
-  }
-  if (line) lines.push(line);
-  return lines;
-}
-
-// Largest font size (<= baseSize) whose wrapped lines fit the box.
-function fitText(context, text, maxWidth, maxHeight, baseSize, family) {
-  for (var size = baseSize; size >= 12; size -= 2) {
-    context.font = size + "px " + family;
-    var lines = wrapLines(context, text, maxWidth);
-    var lineHeight = Math.round(size * 1.15);
-    if (lines.length * lineHeight <= maxHeight) {
-      return { size: size, lines: lines, lineHeight: lineHeight };
-    }
-  }
-  context.font = "12px " + family;
-  return {
-    size: 12,
-    lines: wrapLines(context, text, maxWidth),
-    lineHeight: 14,
-  };
-}
-
-function drawTitle() {
-  ctx.fillStyle = $("#title-color").colorpicker("getValue");
-  ctx.fillRect(0, 300, 500, 120);
-
-  var text = document.querySelector("#title").value;
-  if (!text) return;
-
-  // Title bar visible area: x 0–500, y 300–400.
-  var box = { x: 250, top: 300, height: 100, maxWidth: 460 };
-  ctx.fillStyle = "rgba(255, 255, 255, 1)";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  setShadow();
-  var fit = fitText(ctx, text, box.maxWidth, box.height - 12, 30, "sans-serif");
-  ctx.font = fit.size + "px sans-serif";
-  var totalH = fit.lines.length * fit.lineHeight;
-  var startY = box.top + (box.height - totalH) / 2 + fit.lineHeight / 2;
-  for (var i = 0; i < fit.lines.length; i++) {
-    ctx.fillText(fit.lines[i], box.x, startY + i * fit.lineHeight);
-  }
-  clearShadow();
-}
-
-function drawCategory() {
-  var selected = document.querySelector("#category").value;
-  var text =
-    selected === "__custom__"
-      ? document.querySelector("#custom-category").value || ""
-      : selected;
-
-  ctx.fillStyle = $("#category-color").colorpicker("getValue");
-  ctx.fillRect(500, 0, 150, 400);
-  if (!text) return;
-
-  ctx.save();
-  // Pivot at the sidebar's center (x 500–600 → 550, y center 200); "middle"
-  // baseline so the rotated text is centered across the bar's width.
-  ctx.translate(550, 200);
-  ctx.rotate(-0.5 * Math.PI);
-  ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  // Shrink to fit along the sidebar's length (the canvas height, ~360 usable).
-  var size = 48;
-  while (size > 16) {
-    ctx.font = size + "px sans-serif";
-    if (ctx.measureText(text).width <= 360) break;
-    size -= 2;
-  }
-  ctx.font = size + "px sans-serif";
-  setShadow();
-  ctx.fillText(text, 0, 0);
-  ctx.restore();
-  clearShadow();
-}
-
-function drawBackground() {
-  if (!bgImage) return;
-  var c = coverCrop(bgImage, 1.5); // 1.5:1
-  ctx.globalCompositeOperation = "destination-over";
-  ctx.drawImage(bgImage, c.x, c.y, c.w, c.h, 0, 0, 600, 400);
-  ctx.globalCompositeOperation = "source-over";
-}
-
-function drawLogo() {
-  if (!logoImage) return;
-  // Fit the whole logo inside a 145px box (no cropping), anchored top-left,
-  // so non-square brand lockups keep their real proportions.
-  var box = 145;
-  var pad = 9;
-  var scale = Math.min(box / logoImage.width, box / logoImage.height);
-  var w = logoImage.width * scale;
-  var h = logoImage.height * scale;
-  // Soft dark plate behind the logo so it stays legible on any background
-  // (e.g., the City "SD" mark over a blue sky).
-  ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetX = 2;
-  ctx.shadowOffsetY = 2;
-  roundRect(5, 5, w + pad * 2, h + pad * 2, 12);
-  ctx.fillStyle = "rgba(20, 30, 45, 0.55)";
-  ctx.fill();
-  clearShadow();
-  ctx.drawImage(logoImage, 5 + pad, 5 + pad, w, h);
-}
-
 // Debounced screen-reader announcement so we don't fire on every keystroke.
 var announce = (function () {
   var t;
@@ -216,11 +33,19 @@ var announce = (function () {
 })();
 
 function draw() {
-  ctx.clearRect(0, 0, editCanvas.width, editCanvas.height);
-  drawTitle();
-  drawCategory();
-  drawBackground();
-  drawLogo();
+  var selected = document.querySelector("#category").value;
+  var category =
+    selected === "__custom__"
+      ? document.querySelector("#custom-category").value || ""
+      : selected;
+  Thumb.paintItem(ctx, {
+    title: document.querySelector("#title").value,
+    titleColor: $("#title-color").colorpicker("getValue"),
+    category: category,
+    categoryColor: $("#category-color").colorpicker("getValue"),
+    bgImage: bgImage,
+    logoImage: logoImage,
+  });
   announce();
 }
 
