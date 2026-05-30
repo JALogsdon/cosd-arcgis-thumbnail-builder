@@ -31,7 +31,8 @@
 .dark-mode .card-content p {
   color: #ffffff !important;
 }
-.dark-mode canvas {
+.dark-mode #edit-canvas,
+.dark-mode #group-canvas {
   border-color: #555;
 }
 .dark-mode .sidenav {
@@ -98,12 +99,16 @@ main.container {
   padding-top: 1.5rem;
 }
 
-canvas {
+/* The two builder preview canvases — scoped by id so the small
+   template-card preview canvases keep their own intrinsic aspect ratio
+   (a generic `canvas` rule would stretch the square group previews). */
+#edit-canvas,
+#group-canvas {
   display: block;
   width: 100%;
   max-width: 420px;
   height: auto;
-  /* Centered above the property grid */
+  /* Centered in the preview column */
   margin: 0 auto;
   aspect-ratio: 3 / 2;
   border: 1px solid black;

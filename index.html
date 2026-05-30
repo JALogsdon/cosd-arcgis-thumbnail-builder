@@ -153,10 +153,10 @@
           </div>
         </aside>
 
-        <!-- Builder: preview beside the property grid -->
+        <!-- Builder: preview + image uploads on the left, title/sidebar on the right -->
         <div class="col s12 m9">
           <div class="row">
-            <!-- Preview -->
+            <!-- Preview + image uploads -->
             <div class="col s12 l6">
               <div class="row">
                 <!-- Accessible thumbnail preview -->
@@ -194,12 +194,64 @@
                   <i class="material-icons left">refresh</i>Reset
                 </button>
               </div>
+
+              <div class="row">
+                <h2>Background Image</h2>
+                <p class="grey-text text-darken-1 field-hint">
+                  600×400 px or larger · PNG, JPEG, GIF
+                </p>
+                <input type="hidden" id="background-url" />
+                <div class="input-field col s12">
+                  <div class="file-field input-field">
+                    <div class="btn">
+                      <span>File</span>
+                      <label for="background" class="visually-hidden"
+                        >Upload background image</label
+                      >
+                      <input type="file" id="background" />
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input
+                        class="file-path validate"
+                        type="text"
+                        aria-label="Selected background file"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <h2>Logo Image</h2>
+                <p class="grey-text text-darken-1 field-hint">
+                  145×145 px or larger · PNG, JPEG, GIF
+                </p>
+                <input type="hidden" id="logo-url" />
+                <div class="input-field col s12">
+                  <div class="file-field input-field">
+                    <div class="btn">
+                      <span>File</span>
+                      <label for="logo" class="visually-hidden"
+                        >Upload logo image</label
+                      >
+                      <input type="file" id="logo" />
+                    </div>
+                    <div class="file-path-wrapper">
+                      <input
+                        class="file-path validate"
+                        type="text"
+                        aria-label="Selected logo file"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Properties -->
+            <!-- Title and sidebar -->
             <div class="col s12 l6">
               <div class="row">
-                <div class="col s12 m6">
+                <div class="col s12">
                   <div class="row">
                     <h2>Title</h2>
                     <div class="input-field col s12">
@@ -238,7 +290,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col s12 m6">
+                <div class="col s12">
                   <div class="row">
                     <h2>Sidebar</h2>
                     <div class="input-field col s12">
@@ -304,63 +356,6 @@
                         placeholder="#ffa02f"
                         aria-label="Sidebar color hex code"
                       />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col s12 m6">
-                  <div class="row">
-                    <h2>Background Image</h2>
-                    <p class="grey-text text-darken-1 field-hint">
-                      600×400 px or larger · PNG, JPEG, GIF
-                    </p>
-                    <input type="hidden" id="background-url" />
-                    <div class="input-field col s12">
-                      <div class="file-field input-field">
-                        <div class="btn">
-                          <span>File</span>
-                          <label for="background" class="visually-hidden"
-                            >Upload background image</label
-                          >
-                          <input type="file" id="background" />
-                        </div>
-                        <div class="file-path-wrapper">
-                          <input
-                            class="file-path validate"
-                            type="text"
-                            aria-label="Selected background file"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col s12 m6">
-                  <div class="row">
-                    <h2>Logo Image</h2>
-                    <p class="grey-text text-darken-1 field-hint">
-                      145×145 px or larger · PNG, JPEG, GIF
-                    </p>
-                    <input type="hidden" id="logo-url" />
-                    <div class="input-field col s12">
-                      <div class="file-field input-field">
-                        <div class="btn">
-                          <span>File</span>
-                          <label for="logo" class="visually-hidden"
-                            >Upload logo image</label
-                          >
-                          <input type="file" id="logo" />
-                        </div>
-                        <div class="file-path-wrapper">
-                          <input
-                            class="file-path validate"
-                            type="text"
-                            aria-label="Selected logo file"
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
