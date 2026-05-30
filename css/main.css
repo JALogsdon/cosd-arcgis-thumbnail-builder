@@ -99,9 +99,12 @@ main.container {
 }
 
 canvas {
+  display: block;
   width: 100%;
   max-width: 420px;
   height: auto;
+  /* Centered above the property grid */
+  margin: 0 auto;
   aspect-ratio: 3 / 2;
   border: 1px solid black;
 }
@@ -247,6 +250,7 @@ nav {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  justify-content: center;
 }
 
 /* Helper text margins (was inline styles) */
