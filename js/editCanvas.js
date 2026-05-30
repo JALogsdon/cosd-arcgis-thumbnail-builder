@@ -10,6 +10,9 @@ var ctx = editCanvas.getContext("2d");
 // redraws — it never re-reads the file or re-decodes the image.
 var bgImage = null;
 var logoImage = null;
+// Logo size multiplier, set from the ?logoScale= param so a template can
+// render its logo larger (e.g., the detailed Transportation badge).
+var logoScale = 1;
 
 // City of San Diego theme — loaded by default when the page opens with no
 // query params (absolute URLs so they resolve the same locally and live).
@@ -45,6 +48,7 @@ function draw() {
     categoryColor: $("#category-color").colorpicker("getValue"),
     bgImage: bgImage,
     logoImage: logoImage,
+    logoScale: logoScale,
   });
   announce();
 }
@@ -118,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Query params
+  logoScale = parseFloat(getUrlParameter("logoScale")) || 1;
   if (getUrlParameter("titleColor")) {
     $("#title-color").colorpicker(
       "setValue",
@@ -328,6 +333,7 @@ function buildShareUrl() {
   if (bgUrl) params.set("background", bgUrl);
   var logoUrl = document.querySelector("#logo-url").value;
   if (logoUrl) params.set("logo", logoUrl);
+  if (logoScale !== 1) params.set("logoScale", logoScale);
 
   return location.origin + location.pathname + "?" + params.toString();
 }

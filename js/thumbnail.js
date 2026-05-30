@@ -203,14 +203,14 @@
     drawTitle(ctx, cfg.title || "", cfg.titleColor, ITEM_TITLE);
     drawSidebar(ctx, cfg.category || "", cfg.categoryColor);
     drawBackground(ctx, cfg.bgImage, 1.5, 600, 400);
-    drawLogo(ctx, cfg.logoImage, 120);
+    drawLogo(ctx, cfg.logoImage, 120 * (cfg.logoScale || 1));
   }
 
   function paintGroup(ctx, cfg) {
     ctx.clearRect(0, 0, 400, 400);
     drawTitle(ctx, cfg.title || "", cfg.titleColor, GROUP_TITLE);
     drawBackground(ctx, cfg.bgImage, 1, 400, 400);
-    drawLogo(ctx, cfg.logoImage, 100);
+    drawLogo(ctx, cfg.logoImage, 100 * (cfg.logoScale || 1));
   }
 
   // ---- Template preview cards (rendered from each card's own link) ----
@@ -246,6 +246,7 @@
         ? "rgba(" + p.get("sidebarColor") + ")"
         : "rgba(255,160,47,0.9)",
       category: p.get("category") || "Dashboard",
+      logoScale: parseFloat(p.get("logoScale")) || 1,
     };
   }
 
