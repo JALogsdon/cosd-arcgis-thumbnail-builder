@@ -34,6 +34,17 @@ function clearShadow() {
   ctx.shadowOffsetY = 0;
 }
 
+// Trace a rounded rectangle path (caller fills/strokes it).
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
 // Center-crop a source image to a target aspect ratio (width / height).
 function coverCrop(img, aspectTarget) {
   var sw = img.width;
@@ -175,15 +186,21 @@ function drawLogo() {
   // Fit the whole logo inside a 145px box (no cropping), anchored top-left,
   // so non-square brand lockups keep their real proportions.
   var box = 145;
+  var pad = 9;
   var scale = Math.min(box / logoImage.width, box / logoImage.height);
   var w = logoImage.width * scale;
   var h = logoImage.height * scale;
-  ctx.shadowColor = "black";
-  ctx.shadowBlur = 5;
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 3;
-  ctx.drawImage(logoImage, 5, 5, w, h);
+  // Soft dark plate behind the logo so it stays legible on any background
+  // (e.g., the City "SD" mark over a blue sky).
+  ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+  roundRect(5, 5, w + pad * 2, h + pad * 2, 12);
+  ctx.fillStyle = "rgba(20, 30, 45, 0.55)";
+  ctx.fill();
   clearShadow();
+  ctx.drawImage(logoImage, 5 + pad, 5 + pad, w, h);
 }
 
 // Debounced screen-reader announcement so we don't fire on every keystroke.
