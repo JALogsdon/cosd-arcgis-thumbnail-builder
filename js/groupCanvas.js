@@ -13,6 +13,9 @@ var logoImage = null;
 // Logo size multiplier, set from the ?logoScale= param so a template can
 // render its logo larger (e.g., the detailed Transportation badge).
 var logoScale = 1;
+// White outline width (canvas px), set from the ?logoStroke= param for marks
+// that need extra separation from busy imagery. 0 = no outline.
+var logoStroke = 0;
 
 // City of San Diego theme — loaded by default when the page opens with no
 // query params (absolute URLs so they resolve the same locally and live).
@@ -42,6 +45,7 @@ function draw() {
     bgImage: bgImage,
     logoImage: logoImage,
     logoScale: logoScale,
+    logoStroke: logoStroke,
   });
   announce();
 }
@@ -100,6 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Query params
   logoScale = parseFloat(getUrlParameter("logoScale")) || 1;
+  logoStroke = parseFloat(getUrlParameter("logoStroke")) || 0;
   if (getUrlParameter("titleColor")) {
     $("#title-color").colorpicker(
       "setValue",
@@ -275,6 +280,7 @@ function buildShareUrl() {
   var logoUrl = document.querySelector("#logo-url").value;
   if (logoUrl) params.set("logo", logoUrl);
   if (logoScale !== 1) params.set("logoScale", logoScale);
+  if (logoStroke !== 0) params.set("logoStroke", logoStroke);
 
   return location.origin + location.pathname + "?" + params.toString();
 }

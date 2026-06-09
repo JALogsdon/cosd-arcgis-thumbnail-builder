@@ -156,36 +156,38 @@
   }
 
   // Fit the whole logo inside a box (no cropping), anchored top-left, with a
-  // thin white outline plus a soft dark halo so the mark stays legible on any
-  // background without a visible plate. Drawn twice to give the halo a little
-  // more presence.
-  var LOGO_STROKE = 1.5; // white outline thickness, in canvas px
-
-  function drawLogo(ctx, img, box) {
+  // soft dark halo so the mark stays legible on any background without a
+  // visible plate. Drawn twice to give the halo a little more presence.
+  // `stroke` (canvas px, from the ?logoStroke= param) adds a thin white
+  // outline for marks that need extra separation from busy imagery — off by
+  // default because logos that already contain white (e.g., the City "SD")
+  // just smear into it.
+  function drawLogo(ctx, img, box, stroke) {
     if (!img) return;
     var scale = Math.min(box / img.width, box / img.height);
     var w = img.width * scale;
     var h = img.height * scale;
-    var pad = Math.ceil(LOGO_STROKE) + 1;
+    var pad = stroke > 0 ? Math.ceil(stroke) + 1 : 0;
 
-    // White silhouette of the scaled logo (alpha kept, color flattened).
-    var sil = document.createElement("canvas");
-    sil.width = Math.ceil(w) + pad * 2;
-    sil.height = Math.ceil(h) + pad * 2;
-    var sctx = sil.getContext("2d");
-    sctx.drawImage(img, pad, pad, w, h);
-    sctx.globalCompositeOperation = "source-in";
-    sctx.fillStyle = "#fff";
-    sctx.fillRect(0, 0, sil.width, sil.height);
-
-    // Stamp the silhouette in a ring to form the outline, logo on top.
     var off = document.createElement("canvas");
-    off.width = sil.width;
-    off.height = sil.height;
+    off.width = Math.ceil(w) + pad * 2;
+    off.height = Math.ceil(h) + pad * 2;
     var octx = off.getContext("2d");
-    for (var i = 0; i < 16; i++) {
-      var a = (Math.PI * 2 * i) / 16;
-      octx.drawImage(sil, LOGO_STROKE * Math.cos(a), LOGO_STROKE * Math.sin(a));
+    if (stroke > 0) {
+      // White silhouette of the scaled logo (alpha kept, color flattened),
+      // stamped in a ring to form the outline.
+      var sil = document.createElement("canvas");
+      sil.width = off.width;
+      sil.height = off.height;
+      var sctx = sil.getContext("2d");
+      sctx.drawImage(img, pad, pad, w, h);
+      sctx.globalCompositeOperation = "source-in";
+      sctx.fillStyle = "#fff";
+      sctx.fillRect(0, 0, sil.width, sil.height);
+      for (var i = 0; i < 16; i++) {
+        var a = (Math.PI * 2 * i) / 16;
+        octx.drawImage(sil, stroke * Math.cos(a), stroke * Math.sin(a));
+      }
     }
     octx.drawImage(img, pad, pad, w, h);
 
@@ -229,14 +231,14 @@
     drawTitle(ctx, cfg.title || "", cfg.titleColor, ITEM_TITLE);
     drawSidebar(ctx, cfg.category || "", cfg.categoryColor);
     drawBackground(ctx, cfg.bgImage, 1.5, 600, 400);
-    drawLogo(ctx, cfg.logoImage, 120 * (cfg.logoScale || 1));
+    drawLogo(ctx, cfg.logoImage, 120 * (cfg.logoScale || 1), cfg.logoStroke || 0);
   }
 
   function paintGroup(ctx, cfg) {
     ctx.clearRect(0, 0, 400, 400);
     drawTitle(ctx, cfg.title || "", cfg.titleColor, GROUP_TITLE);
     drawBackground(ctx, cfg.bgImage, 1, 400, 400);
-    drawLogo(ctx, cfg.logoImage, 100 * (cfg.logoScale || 1));
+    drawLogo(ctx, cfg.logoImage, 100 * (cfg.logoScale || 1), cfg.logoStroke || 0);
   }
 
   // ---- Template preview cards (rendered from each card's own link) ----
@@ -273,6 +275,7 @@
         : "rgba(255,160,47,0.9)",
       category: p.get("category") || "Dashboard",
       logoScale: parseFloat(p.get("logoScale")) || 1,
+      logoStroke: parseFloat(p.get("logoStroke")) || 0,
     };
   }
 
