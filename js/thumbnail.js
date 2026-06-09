@@ -156,20 +156,46 @@
   }
 
   // Fit the whole logo inside a box (no cropping), anchored top-left, with a
-  // soft dark halo so the mark stays legible on any background without a
-  // visible plate. Drawn twice to give the halo a little more presence.
+  // thin white outline plus a soft dark halo so the mark stays legible on any
+  // background without a visible plate. Drawn twice to give the halo a little
+  // more presence.
+  var LOGO_STROKE = 1.5; // white outline thickness, in canvas px
+
   function drawLogo(ctx, img, box) {
     if (!img) return;
     var scale = Math.min(box / img.width, box / img.height);
     var w = img.width * scale;
     var h = img.height * scale;
+    var pad = Math.ceil(LOGO_STROKE) + 1;
+
+    // White silhouette of the scaled logo (alpha kept, color flattened).
+    var sil = document.createElement("canvas");
+    sil.width = Math.ceil(w) + pad * 2;
+    sil.height = Math.ceil(h) + pad * 2;
+    var sctx = sil.getContext("2d");
+    sctx.drawImage(img, pad, pad, w, h);
+    sctx.globalCompositeOperation = "source-in";
+    sctx.fillStyle = "#fff";
+    sctx.fillRect(0, 0, sil.width, sil.height);
+
+    // Stamp the silhouette in a ring to form the outline, logo on top.
+    var off = document.createElement("canvas");
+    off.width = sil.width;
+    off.height = sil.height;
+    var octx = off.getContext("2d");
+    for (var i = 0; i < 16; i++) {
+      var a = (Math.PI * 2 * i) / 16;
+      octx.drawImage(sil, LOGO_STROKE * Math.cos(a), LOGO_STROKE * Math.sin(a));
+    }
+    octx.drawImage(img, pad, pad, w, h);
+
     ctx.save();
     ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
     ctx.shadowBlur = 5;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
-    ctx.drawImage(img, 8, 8, w, h);
-    ctx.drawImage(img, 8, 8, w, h);
+    ctx.drawImage(off, 8 - pad, 8 - pad);
+    ctx.drawImage(off, 8 - pad, 8 - pad);
     ctx.restore();
   }
 
