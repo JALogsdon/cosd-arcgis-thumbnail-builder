@@ -1,6 +1,6 @@
-// Shared thumbnail drawing, used by BOTH the live builders (editCanvas.js,
-// groupCanvas.js) and the template preview cards in the rail — so the
-// previews render dynamically from the same code and always match output.
+// Shared thumbnail drawing, used by BOTH the live builder (builder.js) and the
+// template preview cards in the rail — so the previews render dynamically from
+// the same code and always match output.
 //
 // Exposes window.Thumb.paintItem(ctx, cfg) and window.Thumb.paintGroup(ctx, cfg)
 // where cfg = { title, titleColor, category, categoryColor, bgImage, logoImage }

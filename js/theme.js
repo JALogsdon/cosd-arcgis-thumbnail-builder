@@ -10,12 +10,20 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!toggles.length) return;
 
   // The inline <head> script already applied the saved/URL/system theme to
-  // <html> before paint (no flash). Sync everything to that state.
+  // <html> before paint (no flash). Sync the UI to that state, but DON'T
+  // persist here: writing on load would freeze a system-derived theme as an
+  // explicit choice, so a later OS theme change (or someone else's ?theme=
+  // link) would no longer take effect. Persist only on an explicit toggle,
+  // or when the URL explicitly asked for a theme.
   var root = document.documentElement;
   var dark = root.classList.contains("dark-mode");
   updateIcons(dark);
   syncThemeLinks(dark);
-  saveTheme(dark);
+  var urlTheme = null;
+  try {
+    urlTheme = new URLSearchParams(location.search).get("theme");
+  } catch (e) {}
+  if (urlTheme === "dark" || urlTheme === "light") saveTheme(dark);
 
   toggles.forEach(function (btn) {
     btn.addEventListener("click", function (e) {
@@ -47,6 +55,9 @@ document.addEventListener("DOMContentLoaded", function () {
     toggles.forEach(function (btn) {
       var icon = btn.querySelector(".material-icons");
       if (icon) icon.textContent = d ? "light_mode" : "dark_mode";
+      // Announce state to assistive tech and keep the label accurate.
+      btn.setAttribute("aria-pressed", d ? "true" : "false");
+      btn.setAttribute("aria-label", d ? "Switch to light mode" : "Switch to dark mode");
     });
   }
 
