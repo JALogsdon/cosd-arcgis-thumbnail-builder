@@ -5,6 +5,7 @@
   --bg: #ffffff;
   --fg: #222222;
   --surface: #f2f2f2;
+  --muted: #616161;
   --primary: #0098db;
   --accent: #0073a6;
 }
@@ -13,8 +14,12 @@
   --bg: #1e1e1e;
   --fg: #e0e0e0;
   --surface: #2a2a2a;
+  --muted: #a5a5a5;
   --primary: #0073a6;
   --accent: #0098db;
+  /* Render native UI (scrollbars, form controls) dark so the rail's inner
+     scrollbar stops cutting a bright stripe through the dark panel. */
+  color-scheme: dark;
 }
 .dark-mode nav {
   /* --primary (#0073a6) gives white nav text ~5.2:1 — AA pass.
@@ -40,6 +45,30 @@
 }
 .dark-mode .sidenav a {
   color: var(--fg);
+}
+
+/* Materialize renders the <select> options as teal-on-white, which fails AA
+   contrast in light mode and flashes a bright panel in dark mode. Theme it in
+   both modes. */
+.dropdown-content {
+  background-color: var(--bg);
+}
+.dropdown-content li > a,
+.dropdown-content li > span {
+  color: var(--fg);
+}
+.dropdown-content li.selected,
+.dropdown-content li:hover,
+.dropdown-content li > a:hover,
+.dropdown-content li > span:hover {
+  background-color: var(--surface);
+}
+/* rgba color-picker popup: keep the frame dark in dark mode (override from
+   here, not the vendored file). */
+.dark-mode .colorpicker-dropdown,
+.dark-mode .colorpicker {
+  background-color: var(--surface);
+  border-color: #555;
 }
 
 /* ---------- COSD Typography (all-sans) ---------- */
@@ -82,18 +111,13 @@ h5 {
   font-weight: 400;
 }
 
-p.accent {
-  font-size: 1.375rem;
-  line-height: 1.5;
-}
-p.fine {
-  font-size: 0.75rem;
-  line-height: 1.5;
-}
-
 /* Canvas and container resets */
-/* Keep the editor compact and centered instead of sprawling on wide screens */
+/* Keep the editor compact and centered instead of sprawling on wide screens.
+   width:90% (beating Materialize's .container 70%) engages the layout at
+   laptop/projector widths too, where 70% would leave big dead margins; the
+   1200px cap still reins it in on large monitors. */
 main.container {
+  width: 90%;
   max-width: 1200px;
   /* Buffer so the builder sits a little below the top banner */
   padding-top: 1.5rem;
@@ -199,20 +223,37 @@ h2:first-of-type {
   color: var(--fg);
 }
 
-.brand-logo {
-  margin-left: 25px;
-}
-
 /* 1. Default (light mode) banner: COSD blue */
 nav {
   background: var(--primary);
 }
 
-/* Thicken header text for better legibility */
-@media (prefers-color-scheme: light) {
-  .nav-wrapper .brand-logo,
-  .nav-wrapper a {
-    font-weight: 600 !important;
+/* Thicken header text for legibility. Applied unconditionally: white-on-blue
+   in dark mode benefits from the weight too (the old @media
+   prefers-color-scheme rule tracked the OS setting, not the site's theme
+   toggle, so the weight could mismatch the visible theme). */
+.nav-wrapper .brand-logo,
+.nav-wrapper a {
+  font-weight: 600 !important;
+}
+
+/* Desktop-only left offset for the wordmark. */
+@media (min-width: 993px) {
+  .brand-logo {
+    margin-left: 25px;
+  }
+}
+
+/* On phones/tablets Materialize centers .brand-logo in half the nav width, so
+   a long wordmark wraps over the page. Keep it on one line and ellipsize. */
+@media (max-width: 992px) {
+  nav .brand-logo {
+    margin-left: 0;
+    font-size: 1.4rem;
+    max-width: calc(100% - 120px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -230,20 +271,31 @@ nav {
   margin: 4px 0;
 }
 
-/* Buttons — accent passes WCAG AA contrast with --bg text in both themes */
+/* Buttons — accent passes WCAG AA contrast with --bg text in both themes.
+   Override Materialize's teal hover/focus so buttons stay on-brand. */
 .btn {
   background-color: var(--accent);
   color: var(--bg);
 }
-
-/* Download button override */
-#download-image {
-  background-color: var(--accent) !important;
+.btn:hover,
+.btn:focus {
+  background-color: var(--primary);
 }
 
-/* Secondary actions (Copy link, Reset) — flat, themed for both modes */
+/* Re-theme Materialize's teal focus underline on the text inputs. */
+input[type="text"]:not(.browser-default):focus:not([readonly]) {
+  border-bottom: 1px solid var(--primary);
+  box-shadow: 0 1px 0 0 var(--primary);
+}
+
+/* Secondary actions (Copy link, Reset) — flat, themed for both modes. Neutral
+   hover/focus in both themes so Materialize's teal fill can't show through. */
 .btn-flat {
   color: var(--fg);
+}
+.btn-flat:hover,
+.btn-flat:focus {
+  background-color: rgba(0, 0, 0, 0.08);
 }
 .dark-mode .btn-flat:hover,
 .dark-mode .btn-flat:focus {
@@ -273,6 +325,7 @@ nav {
 /* Visible focus outline for keyboard users */
 .btn:focus,
 a:focus,
+button:focus,
 input:focus,
 select:focus {
   outline: 2px solid var(--fg);
@@ -292,21 +345,29 @@ select:focus {
   border: 0 !important;
 }
 
-/* Skip-nav becomes visible when focused */
-.focusable:focus {
-  position: absolute;
+/* Skip-nav becomes visible when focused. Every .visually-hidden declaration
+   is !important, so the focus state must be too (and more specific) or the
+   link stays clipped to 1x1 px and focus visibly vanishes on the first Tab. */
+.visually-hidden.focusable:focus {
+  position: fixed !important;
   top: 10px;
   left: 10px;
   z-index: 1000;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 8px 12px !important;
+  clip: auto !important;
+  overflow: visible !important;
+  white-space: normal !important;
   background: #ffffff;
   color: #000000;
-  padding: 8px 12px;
   border-radius: 4px;
   text-decoration: none;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
-/* Enhance gallery-card readability */
+/* Template rail card labels */
 .card-content p {
   font-weight: 600;
   color: var(--fg);
@@ -316,14 +377,98 @@ select:focus {
   font-weight: 600;
   color: var(--accent);
 }
-
-/* Home landing cards: normalize the two preview images to one height */
-.home-card .card-image img {
-  height: 180px;
-  object-fit: cover;
+/* --accent (#0098db) on the dark card surface (#2a2a2a) is ~4.45:1, a hair
+   under AA; lighten it just for dark mode. */
+.dark-mode .card-action a {
+  color: #33b1e8;
 }
 
-/* Helper text (background/logo instructions) */
+/* Helper text (background/logo instructions): use a muted token so the hint
+   stays readable in dark mode but still reads as secondary in light mode
+   (a flat --fg override erased the grey hierarchy the class exists for). */
 .row p.grey-text.text-darken-1 {
-  color: var(--fg) !important;
+  color: var(--muted) !important;
+}
+
+/* Output-size caption under each preview canvas */
+.canvas-caption {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 6px auto 0;
+}
+
+/* "or paste an image URL" fields */
+.url-field {
+  margin-top: 4px;
+}
+.url-input {
+  width: 100%;
+}
+
+/* Drop-target cue when dragging an image over the preview column */
+.drag-over {
+  outline: 2px dashed var(--primary);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
+/* Keep wide content (help table, long share URLs) from widening the page on
+   phones; it scrolls or wraps inside its own box instead. */
+.table-scroll {
+  overflow-x: auto;
+}
+/* Help content sits directly in a Materialize .row (no .col to absorb the
+   row's -0.75rem side margins), which would otherwise spill ~12px past the
+   viewport and clip text on phones. */
+.help-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+.break-url a {
+  word-break: break-all;
+}
+
+/* Footer with the affiliation disclaimer */
+.page-footer {
+  margin-top: 2.5rem;
+  padding: 1rem 0 1.5rem;
+  background: var(--surface);
+  color: var(--muted);
+}
+.page-footer p {
+  font-size: 0.8rem;
+  margin: 0;
+}
+.page-footer a {
+  color: var(--accent);
+}
+.dark-mode .page-footer a {
+  color: #33b1e8;
+}
+
+/* Print: force light tokens (browsers drop dark backgrounds, leaving pale text
+   on white) and drop chrome that doesn't belong on paper. */
+@media print {
+  :root,
+  .dark-mode {
+    --bg: #ffffff;
+    --fg: #000000;
+    --surface: #ffffff;
+    --muted: #333333;
+    color-scheme: light;
+  }
+  nav,
+  .sidenav,
+  .btn-row,
+  .page-footer {
+    display: none !important;
+  }
+  .template-rail {
+    position: static;
+    max-height: none;
+  }
+  .rail-cards {
+    overflow: visible;
+  }
 }

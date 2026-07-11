@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found — Thumbnail Builder for ArcGIS Online</title>
+    <!-- GitHub Pages serves this for unknown paths at any depth, so all assets
+         and links use absolute URLs to the live site rather than relative
+         paths (which would resolve against the bad URL). -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/favicon_32.png"
+    />
+    <script>
+      (function () {
+        var dark = false;
+        try {
+          var stored = localStorage.getItem("theme");
+          dark = stored
+            ? stored === "dark"
+            : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        } catch (e) {
+          dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        }
+        if (dark) document.documentElement.classList.add("dark-mode");
+      })();
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      integrity="sha384-5KZdSYqynSzIjQGS2M1O3HW6HVDBjfNx0v5Y2eQuE3vvQ9NTiiPK9/GWc0yYCrgw"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/css/main.css"
+    />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a
+          href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/index.html"
+          class="brand-logo"
+          >Thumbnail Builder</a
+        >
+      </div>
+    </nav>
+
+    <main id="main" class="container">
+      <h1 style="margin-top: 2rem">Page not found</h1>
+      <p>That page doesn't exist here, or a shared link may have been cut off.</p>
+      <p>
+        <a
+          class="btn"
+          href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/index.html"
+          >Go to the Item Thumbnail builder</a
+        >
+      </p>
+      <p>
+        Or jump to the
+        <a
+          href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/group.html"
+          >Group Thumbnail builder</a
+        >
+        or
+        <a href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/help.html"
+          >Help</a
+        >.
+      </p>
+    </main>
+  </body>
+</html>

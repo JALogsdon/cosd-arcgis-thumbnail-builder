@@ -3,8 +3,35 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Help — City of San Diego GIS</title>
-    <link rel="icon" href="./img/logo/cosd_logo.png" />
+    <title>Help — Thumbnail Builder for ArcGIS Online — City of San Diego GIS</title>
+    <meta
+      name="description"
+      content="How to use the Thumbnail Builder for ArcGIS Online, including the query parameters that preconfigure and share a thumbnail."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./img/logo/favicon_32.png"
+    />
+    <link rel="apple-touch-icon" href="./img/logo/apple_touch_180.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Thumbnail Builder for ArcGIS Online — Help" />
+    <meta
+      property="og:description"
+      content="How to use the Thumbnail Builder for ArcGIS Online, including query parameters."
+    />
+    <meta
+      property="og:url"
+      content="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/help.html"
+    />
+    <meta
+      property="og:image"
+      content="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/gallery/social_card.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <!-- Apply the saved theme before paint to avoid a flash of the wrong theme -->
     <script>
       (function () {
@@ -39,6 +66,9 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      integrity="sha384-5KZdSYqynSzIjQGS2M1O3HW6HVDBjfNx0v5Y2eQuE3vvQ9NTiiPK9/GWc0yYCrgw"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
@@ -46,7 +76,7 @@
     />
 
     <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons&display=block"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./css/main.css" />
@@ -54,19 +84,30 @@
 
   <body>
     <a href="#main" class="visually-hidden focusable">Skip to content</a>
-    <nav role="navigation">
+    <nav>
       <div class="nav-wrapper">
-        <a href="./index.html" class="brand-logo">ArcGIS Thumbnail Builder</a>
-        <a href="#" data-target="mobile-nav" class="sidenav-trigger">
-          <i class="material-icons">menu</i>
+        <a href="./index.html" class="brand-logo">Thumbnail Builder</a>
+        <a
+          href="#"
+          data-target="mobile-nav"
+          class="sidenav-trigger"
+          aria-label="Open navigation menu"
+        >
+          <i class="material-icons" aria-hidden="true">menu</i>
         </a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="index.html" target="_self">Item Thumbnail</a></li>
-          <li><a href="group.html" target="_self">Group Thumbnail</a></li>
-          <li><a href="help.html" target="_self">Help</a></li>
+          <li><a href="index.html">Item Thumbnail</a></li>
+          <li><a href="group.html">Group Thumbnail</a></li>
+          <li><a href="help.html">Help</a></li>
           <li>
-            <a href="#" data-theme-toggle title="Toggle light/dark mode">
-              <i class="material-icons">dark_mode</i>
+            <a
+              href="#"
+              data-theme-toggle
+              role="button"
+              aria-pressed="false"
+              aria-label="Switch to dark mode"
+            >
+              <i class="material-icons" aria-hidden="true">dark_mode</i>
             </a>
           </li>
         </ul>
@@ -75,24 +116,36 @@
 
     <!-- Mobile side navigation -->
     <ul class="sidenav" id="mobile-nav">
-      <li><a href="index.html" target="_self">Item Thumbnail</a></li>
-      <li><a href="group.html" target="_self">Group Thumbnail</a></li>
-      <li><a href="help.html" target="_self">Help</a></li>
+      <li><a href="index.html">Item Thumbnail</a></li>
+      <li><a href="group.html">Group Thumbnail</a></li>
+      <li><a href="help.html">Help</a></li>
       <li>
-        <a href="#" data-theme-toggle title="Toggle light/dark mode">
-          <i class="material-icons">dark_mode</i>
+        <a
+          href="#"
+          data-theme-toggle
+          role="button"
+          aria-pressed="false"
+          aria-label="Switch to dark mode"
+        >
+          <i class="material-icons" aria-hidden="true">dark_mode</i>
         </a>
       </li>
     </ul>
 
     <main id="main" class="container">
-      <div class="row">
+      <div class="row help-row">
+        <h1>Help</h1>
         <h2>About</h2>
         <p>
-          Building clear, consistent thumbnails helps users quickly understand
-          ArcGIS Online items before they click. This tool streamlines thumbnail
-          creation for the City of San Diego and just makes things a little
-          prettier ;).
+          Clear, consistent thumbnails help users recognize ArcGIS Online items
+          before they click. This tool builds them to City of San Diego design
+          standards. Templates cover City departments (Stormwater,
+          Transportation) and SanGIS, the San Diego regional GIS agency.
+        </p>
+        <p>
+          On item thumbnails, the vertical band on the right (the "sidebar")
+          labels the ArcGIS item type — Web Map, Dashboard, Survey, and so on —
+          so people can identify content at a glance.
         </p>
         <p>
           City Design Standards:
@@ -107,62 +160,97 @@
 
         <h2>Query Parameters</h2>
         <p>
-          You can make the tool re-usable by adding the query parameters below
-          to your URL.
+          Add any of these to a page's URL to preconfigure it. The "Copy link"
+          button on each builder generates one of these URLs for you. Parameters
+          marked <em>item</em> apply only to the Item Thumbnail page.
         </p>
 
-        <table class="highlight">
-          <thead>
-            <tr>
-              <th>Parameter</th>
-              <th>Description</th>
-              <th>Values</th>
-              <th>Example</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>background</td>
-              <td>Background image URL</td>
-              <td>URL</td>
-              <td>https://path.to/background.png</td>
-            </tr>
-            <tr>
-              <td>logo</td>
-              <td>Logo image URL</td>
-              <td>URL</td>
-              <td>https://path.to/logo.png</td>
-            </tr>
-            <tr>
-              <td>title</td>
-              <td>Title text</td>
-              <td>String</td>
-              <td>My Title</td>
-            </tr>
-            <tr>
-              <td>titleColor</td>
-              <td>Title bar color</td>
-              <td>r,g,b,a</td>
-              <td>0,152,219,0.9</td>
-            </tr>
-            <tr>
-              <td>sidebarColor</td>
-              <td>Sidebar color</td>
-              <td>r,g,b,a</td>
-              <td>255,160,47,0.9</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-scroll">
+          <table class="highlight">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Applies to</th>
+                <th>Description</th>
+                <th>Values</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>background</td>
+                <td>both</td>
+                <td>Background image URL</td>
+                <td>URL</td>
+                <td>https://path.to/background.jpg</td>
+              </tr>
+              <tr>
+                <td>logo</td>
+                <td>both</td>
+                <td>Logo image URL (transparent PNG recommended)</td>
+                <td>URL</td>
+                <td>https://path.to/logo.png</td>
+              </tr>
+              <tr>
+                <td>title</td>
+                <td>both</td>
+                <td>Title text</td>
+                <td>String</td>
+                <td>My Title</td>
+              </tr>
+              <tr>
+                <td>titleColor</td>
+                <td>both</td>
+                <td>Title bar color</td>
+                <td>r,g,b,a</td>
+                <td>0,152,219,0.9</td>
+              </tr>
+              <tr>
+                <td>category</td>
+                <td>item</td>
+                <td>Sidebar label (ArcGIS item type)</td>
+                <td>String</td>
+                <td>Web Map</td>
+              </tr>
+              <tr>
+                <td>sidebarColor</td>
+                <td>item</td>
+                <td>Sidebar color</td>
+                <td>r,g,b,a</td>
+                <td>255,160,47,0.9</td>
+              </tr>
+              <tr>
+                <td>logoScale</td>
+                <td>both</td>
+                <td>Logo size multiplier (default 1)</td>
+                <td>Number</td>
+                <td>1.6</td>
+              </tr>
+              <tr>
+                <td>logoStroke</td>
+                <td>both</td>
+                <td>White outline width in px for busy backgrounds (default 0)</td>
+                <td>Number</td>
+                <td>1.5</td>
+              </tr>
+              <tr>
+                <td>theme</td>
+                <td>both</td>
+                <td>Force light or dark mode</td>
+                <td>light | dark</td>
+                <td>dark</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <p>See Example:</p>
 
-        <p>
+        <p class="break-url">
           <a
-            href="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/index.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,160,47,0.9"
-            target="_blank"
-            rel="noopener"
+            href="./index.html?background=./img/background/cosd_background.jpg&logo=./img/logo/cosd_logo.png&title=San%20Diego%20Geospatial%20Services&titleColor=0,152,219,0.9&sidebarColor=255,160,47,0.9&category=Web%20Map"
           >
-            https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/index.html?background=https://path.to/background.png&logo=https://path.to/logo.png&title=My%20Title&titleColor=0,152,219,0.9&sidebarColor=255,160,47,0.9</a
+            index.html?background=./img/background/cosd_background.jpg&amp;logo=./img/logo/cosd_logo.png&amp;title=San%20Diego%20Geospatial%20Services&amp;titleColor=0,152,219,0.9&amp;sidebarColor=255,160,47,0.9&amp;category=Web%20Map</a
           >
         </p>
 
@@ -194,7 +282,28 @@
         </p>
       </div>
     </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <footer class="page-footer">
+      <div class="container">
+        <p>
+          Independent community project, not affiliated with or endorsed by
+          Esri. ArcGIS is a trademark of Esri. Styled to
+          <a
+            href="https://www.sandiego.gov/communications/design"
+            target="_blank"
+            rel="noopener"
+            >City of San Diego design standards</a
+          >.
+        </p>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
+      integrity="sha384-ZOED+d9HxogEQwD+jFvux96iGQR9TxfJO+mPF2ZS0TuKH6eWrmvPsDpO6I0OWdiX"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="./js/theme.js"></script>
   </body>
 </html>

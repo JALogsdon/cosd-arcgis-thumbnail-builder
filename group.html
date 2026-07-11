@@ -3,8 +3,36 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Group Thumbnail — City of San Diego GIS</title>
-    <link rel="icon" href="./img/logo/cosd_logo.png" />
+    <title>Group Thumbnail Builder for ArcGIS Online — City of San Diego GIS</title>
+    <meta
+      name="description"
+      content="Design and download a 400×400 group thumbnail for ArcGIS Online, styled to City of San Diego standards. Runs entirely in your browser."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./img/logo/favicon_32.png"
+    />
+    <link rel="apple-touch-icon" href="./img/logo/apple_touch_180.png" />
+    <!-- Social / link-preview cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Thumbnail Builder for ArcGIS Online" />
+    <meta
+      property="og:description"
+      content="Design and download item and group thumbnails for ArcGIS Online, styled to City of San Diego standards."
+    />
+    <meta
+      property="og:url"
+      content="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/group.html"
+    />
+    <meta
+      property="og:image"
+      content="./img/gallery/social_card.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <!-- Apply the saved theme before paint to avoid a flash of the wrong theme -->
     <script>
       (function () {
@@ -37,6 +65,9 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      integrity="sha384-5KZdSYqynSzIjQGS2M1O3HW6HVDBjfNx0v5Y2eQuE3vvQ9NTiiPK9/GWc0yYCrgw"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="./css/materialize-colorpicker.min.css" />
     <link
@@ -44,7 +75,7 @@
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons&display=block"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./css/main.css" />
@@ -52,19 +83,30 @@
 
   <body>
     <a href="#main" class="visually-hidden focusable">Skip to content</a>
-    <nav role="navigation">
+    <nav>
       <div class="nav-wrapper">
-        <a href="./index.html" class="brand-logo">ArcGIS Thumbnail Builder</a>
-        <a href="#" data-target="mobile-nav" class="sidenav-trigger">
-          <i class="material-icons">menu</i>
+        <a href="./index.html" class="brand-logo">Thumbnail Builder</a>
+        <a
+          href="#"
+          data-target="mobile-nav"
+          class="sidenav-trigger"
+          aria-label="Open navigation menu"
+        >
+          <i class="material-icons" aria-hidden="true">menu</i>
         </a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="index.html" target="_self">Item Thumbnail</a></li>
-          <li><a href="group.html" target="_self">Group Thumbnail</a></li>
-          <li><a href="help.html" target="_self">Help</a></li>
+          <li><a href="index.html">Item Thumbnail</a></li>
+          <li><a href="group.html">Group Thumbnail</a></li>
+          <li><a href="help.html">Help</a></li>
           <li>
-            <a href="#" data-theme-toggle title="Toggle light/dark mode">
-              <i class="material-icons">dark_mode</i>
+            <a
+              href="#"
+              data-theme-toggle
+              role="button"
+              aria-pressed="false"
+              aria-label="Switch to dark mode"
+            >
+              <i class="material-icons" aria-hidden="true">dark_mode</i>
             </a>
           </li>
         </ul>
@@ -73,17 +115,24 @@
 
     <!-- Mobile side navigation -->
     <ul class="sidenav" id="mobile-nav">
-      <li><a href="index.html" target="_self">Item Thumbnail</a></li>
-      <li><a href="group.html" target="_self">Group Thumbnail</a></li>
-      <li><a href="help.html" target="_self">Help</a></li>
+      <li><a href="index.html">Item Thumbnail</a></li>
+      <li><a href="group.html">Group Thumbnail</a></li>
+      <li><a href="help.html">Help</a></li>
       <li>
-        <a href="#" data-theme-toggle title="Toggle light/dark mode">
-          <i class="material-icons">dark_mode</i>
+        <a
+          href="#"
+          data-theme-toggle
+          role="button"
+          aria-pressed="false"
+          aria-label="Switch to dark mode"
+        >
+          <i class="material-icons" aria-hidden="true">dark_mode</i>
         </a>
       </li>
     </ul>
 
     <main id="main" class="container">
+      <h1 class="visually-hidden">Group Thumbnail Builder for ArcGIS Online</h1>
       <div class="row">
         <!-- Template rail: pick a starting point -->
         <aside class="col s12 m3 template-rail">
@@ -105,7 +154,7 @@
               <div class="card-content"><p>City of San Diego theme</p></div>
               <div class="card-action">
                 <a
-                  href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/cosd_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/cosd_logo.png&title=San%20Diego%20Geospatial%20Services&titleColor=0,152,219,0.9"
+                  href="./group.html?background=./img/background/cosd_background.jpg&logo=./img/logo/cosd_logo.png&title=San%20Diego%20Geospatial%20Services&titleColor=0,152,219,0.9"
                   >Use this template</a
                 >
               </div>
@@ -123,7 +172,7 @@
               <div class="card-content"><p>Stormwater Department theme</p></div>
               <div class="card-action">
                 <a
-                  href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/swd_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/swd_logo.png&title=Stormwater%20Geospatial%20Services&titleColor=0,152,219,0.9&logoStroke=1.5"
+                  href="./group.html?background=./img/background/swd_background.jpg&logo=./img/logo/swd_logo.png&title=Stormwater%20Geospatial%20Services&titleColor=0,152,219,0.9&logoStroke=1.5"
                   >Use this template</a
                 >
               </div>
@@ -143,7 +192,7 @@
               </div>
               <div class="card-action">
                 <a
-                  href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/tsd_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/tsd_logo.png&title=Transportation%20Geospatial%20Services&titleColor=70,151,172,0.9&logoScale=1.6&logoStroke=1.5"
+                  href="./group.html?background=./img/background/tsd_background.jpg&logo=./img/logo/tsd_logo.png&title=Transportation%20Geospatial%20Services&titleColor=70,151,172,0.9&logoScale=1.6&logoStroke=1.5"
                   >Use this template</a
                 >
               </div>
@@ -161,7 +210,7 @@
               <div class="card-content"><p>SanGIS theme</p></div>
               <div class="card-action">
                 <a
-                  href="./group.html?background=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/background/sangis_background.png&logo=https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/logo/sangis_logo.png&title=SanGIS%20Geospatial%20Services&titleColor=1,131,95,0.9&logoScale=1.8&logoStroke=1.5"
+                  href="./group.html?background=./img/background/sangis_background.jpg&logo=./img/logo/sangis_logo.png&title=SanGIS%20Geospatial%20Services&titleColor=1,131,95,0.9&logoScale=1.8&logoStroke=1.5"
                   >Use this template</a
                 >
               </div>
@@ -187,6 +236,9 @@
                   class="visually-hidden"
                   aria-live="polite"
                 ></p>
+                <p class="canvas-caption">
+                  400 × 400 px PNG · sized for ArcGIS Online group thumbnails
+                </p>
               </div>
 
               <div class="row btn-row">
@@ -254,58 +306,86 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col s12 m6">
-                  <div class="row">
-                    <h2>Background Image</h2>
-                    <p class="grey-text text-darken-1 field-hint">
-                      400×400 px or larger · PNG, JPEG, GIF
-                    </p>
-                    <input type="hidden" id="background-url" />
-                    <div class="input-field col s12">
-                      <div class="file-field input-field">
-                        <div class="btn">
-                          <span>File</span>
-                          <label for="background" class="visually-hidden"
-                            >Upload background image</label
-                          >
-                          <input type="file" id="background" />
-                        </div>
-                        <div class="file-path-wrapper">
-                          <input
-                            class="file-path validate"
-                            type="text"
-                            aria-label="Selected background file"
-                          />
-                        </div>
+                <div class="col s12">
+                  <h2>Background Image</h2>
+                  <p class="grey-text text-darken-1 field-hint">
+                    400×400 px or larger · PNG, JPEG, GIF
+                  </p>
+                  <div class="input-field col s12">
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <span>File</span>
+                        <label for="background" class="visually-hidden"
+                          >Upload background image</label
+                        >
+                        <input
+                          type="file"
+                          id="background"
+                          accept="image/png,image/jpeg,image/gif"
+                        />
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input
+                          class="file-path validate"
+                          type="text"
+                          aria-label="Selected background file"
+                        />
                       </div>
                     </div>
                   </div>
+                  <div class="col s12 url-field">
+                    <label class="color-label" for="background-url"
+                      >or paste an image URL</label
+                    >
+                    <input
+                      type="text"
+                      id="background-url"
+                      class="url-input"
+                      placeholder="https://…"
+                      aria-label="Background image URL"
+                    />
+                  </div>
                 </div>
-                <div class="col s12 m6">
-                  <div class="row">
-                    <h2>Logo Image</h2>
-                    <p class="grey-text text-darken-1 field-hint">
-                      120×120 px or larger · PNG, JPEG, GIF
-                    </p>
-                    <input type="hidden" id="logo-url" />
-                    <div class="input-field col s12">
-                      <div class="file-field input-field">
-                        <div class="btn">
-                          <span>File</span>
-                          <label for="logo" class="visually-hidden"
-                            >Upload logo image</label
-                          >
-                          <input type="file" id="logo" />
-                        </div>
-                        <div class="file-path-wrapper">
-                          <input
-                            class="file-path validate"
-                            type="text"
-                            aria-label="Selected logo file"
-                          />
-                        </div>
+              </div>
+              <div class="row">
+                <div class="col s12">
+                  <h2>Logo Image</h2>
+                  <p class="grey-text text-darken-1 field-hint">
+                    Square transparent PNG recommended · 256×256 px or larger
+                  </p>
+                  <div class="input-field col s12">
+                    <div class="file-field input-field">
+                      <div class="btn">
+                        <span>File</span>
+                        <label for="logo" class="visually-hidden"
+                          >Upload logo image</label
+                        >
+                        <input
+                          type="file"
+                          id="logo"
+                          accept="image/png,image/jpeg,image/gif"
+                        />
+                      </div>
+                      <div class="file-path-wrapper">
+                        <input
+                          class="file-path validate"
+                          type="text"
+                          aria-label="Selected logo file"
+                        />
                       </div>
                     </div>
+                  </div>
+                  <div class="col s12 url-field">
+                    <label class="color-label" for="logo-url"
+                      >or paste an image URL</label
+                    >
+                    <input
+                      type="text"
+                      id="logo-url"
+                      class="url-input"
+                      placeholder="https://…"
+                      aria-label="Logo image URL"
+                    />
                   </div>
                 </div>
               </div>
@@ -315,15 +395,36 @@
       </div>
     </main>
 
+    <footer class="page-footer">
+      <div class="container">
+        <p>
+          Independent community project, not affiliated with or endorsed by
+          Esri. ArcGIS is a trademark of Esri. Styled to
+          <a
+            href="https://www.sandiego.gov/communications/design"
+            target="_blank"
+            rel="noopener"
+            >City of San Diego design standards</a
+          >.
+          <a href="help.html">Help &amp; query parameters</a>
+        </p>
+      </div>
+    </footer>
+
     <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+      src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+      integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
       crossorigin="anonymous"
     ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
+      integrity="sha384-ZOED+d9HxogEQwD+jFvux96iGQR9TxfJO+mPF2ZS0TuKH6eWrmvPsDpO6I0OWdiX"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="./js/materialize-colorpicker.min.js"></script>
     <script src="./js/thumbnail.js"></script>
-    <script src="./js/groupCanvas.js"></script>
+    <script src="./js/builder.js"></script>
     <script src="./js/theme.js"></script>
   </body>
 </html>
