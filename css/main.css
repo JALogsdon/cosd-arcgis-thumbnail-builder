@@ -163,8 +163,17 @@ main.container {
   min-height: 0;
   overflow-y: auto;
 }
+/* Whole card is the click target (wired in builder.js); the "Use this
+   template" text stays as the visible affordance and the accessible control. */
 .template-rail .card {
   margin: 8px 0 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.template-rail .card:hover,
+.template-rail .card:focus-within {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
 }
 /* Live template previews (canvas) fill the card width, aspect preserved */
 .template-rail .card-image img,
@@ -172,6 +181,40 @@ main.container {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Scroll cues: sticky chevrons that appear when the rail can scroll further in
+   that direction. Negative margins keep them from adding height; the gradient
+   fades the cards behind the arrow. pointer-events:none so clicks fall through
+   to the cards. */
+.rail-hint {
+  position: sticky;
+  z-index: 3;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  pointer-events: none;
+}
+.rail-hint-up {
+  top: 0;
+  margin-bottom: -26px;
+  background: linear-gradient(to bottom, var(--surface) 40%, transparent);
+}
+.rail-hint-down {
+  bottom: 0;
+  margin-top: -26px;
+  background: linear-gradient(to top, var(--surface) 40%, transparent);
+}
+.rail-hint i {
+  color: var(--fg);
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0.75;
+}
+.template-rail.more-above .rail-hint-up,
+.template-rail.more-below .rail-hint-down {
+  display: flex;
 }
 /* On phones/tablets the rail just stacks above the builder */
 @media (max-width: 992px) {
@@ -241,6 +284,21 @@ nav {
 @media (min-width: 993px) {
   .brand-logo {
     margin-left: 25px;
+  }
+}
+
+/* "for ArcGIS Online" tagline in the banner so the app's purpose is obvious
+   on first load. Lighter and smaller than the wordmark; hidden on small
+   screens where the centered brand has no room for it. */
+.brand-sub {
+  font-size: 0.95rem;
+  font-weight: 400 !important;
+  opacity: 0.85;
+  margin-left: 0.5rem;
+}
+@media (max-width: 992px) {
+  .brand-sub {
+    display: none;
   }
 }
 
@@ -427,6 +485,11 @@ select:focus {
 }
 .break-url a {
   word-break: break-all;
+}
+
+/* 404 page heading spacing */
+.notfound-title {
+  margin-top: 2rem;
 }
 
 /* Footer with the affiliation disclaimer */

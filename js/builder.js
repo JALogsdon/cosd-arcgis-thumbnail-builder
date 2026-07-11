@@ -218,6 +218,10 @@
     // common intent). The whole preview column is the drop target.
     setupDragAndDrop();
 
+    // Whole template card is clickable, and up/down cues show scroll room.
+    setupTemplateCards();
+    setupRailScrollIndicators();
+
     // ---- Query params ----
     logoScale = parseFloat(param("logoScale")) || 1;
     logoStroke = parseFloat(param("logoStroke")) || 0;
@@ -374,6 +378,59 @@
       loadFromFile("background", file);
       toast("Background set from dropped image.");
     });
+  }
+
+  // Make the whole template card clickable (not just the "Use this template"
+  // text). Real clicks/keyboard activation on the link behave normally; a click
+  // anywhere else on the card navigates to the same template URL.
+  function setupTemplateCards() {
+    var cards = document.querySelectorAll(".rail-cards .card");
+    Array.prototype.forEach.call(cards, function (card) {
+      var a = card.querySelector(".card-action a");
+      if (!a) return;
+      card.addEventListener("click", function (e) {
+        if (e.target.closest("a")) return; // the link itself handles its click
+        window.location.href = a.href;
+      });
+    });
+  }
+
+  // Toggle "more above / more below" cues on the rail so a first-time visitor
+  // knows the template list scrolls. Injects two sticky chevron hints into the
+  // scroll container and updates them on scroll/resize (and after the previews
+  // paint, which changes the scroll height).
+  function setupRailScrollIndicators() {
+    var rail = document.querySelector(".template-rail");
+    var cards = rail && rail.querySelector(".rail-cards");
+    if (!rail || !cards) return;
+
+    function hint(cls, glyph) {
+      var el = document.createElement("div");
+      el.className = "rail-hint " + cls;
+      el.setAttribute("aria-hidden", "true");
+      var i = document.createElement("i");
+      i.className = "material-icons";
+      i.textContent = glyph;
+      el.appendChild(i);
+      return el;
+    }
+    var up = hint("rail-hint-up", "keyboard_arrow_up");
+    var down = hint("rail-hint-down", "keyboard_arrow_down");
+    cards.insertBefore(up, cards.firstChild);
+    cards.appendChild(down);
+
+    function update() {
+      var top = cards.scrollTop;
+      var max = cards.scrollHeight - cards.clientHeight;
+      rail.classList.toggle("more-above", top > 2);
+      rail.classList.toggle("more-below", max > 2 && top < max - 2);
+    }
+    cards.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+    update();
+    // Previews paint asynchronously and grow the scroll height; re-check.
+    setTimeout(update, 400);
+    setTimeout(update, 1200);
   }
 
   // ---- Query param (URLSearchParams never throws on malformed % escapes,
