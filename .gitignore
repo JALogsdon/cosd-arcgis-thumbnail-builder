@@ -1,0 +1,7 @@
+# OS / editor cruft
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Node (in case tooling is ever added)
+node_modules/

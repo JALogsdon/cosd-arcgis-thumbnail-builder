@@ -1,14 +1,8 @@
 {
-  // Formatting
+  // Formatting (whitespace/EOL rules live in .editorconfig)
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
 
-  // Line endings & whitespace (cross-platform friendly)
-  "files.eol": "\n",
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-
-  // JavaScript/HTML ergonomics
-  "javascript.suggest.completeFunctionCalls": true,
-  "editor.tabSize": 2
+  // JavaScript ergonomics
+  "javascript.suggest.completeFunctionCalls": true
 }
