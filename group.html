@@ -28,7 +28,7 @@
     />
     <meta
       property="og:image"
-      content="./img/gallery/social_card.jpg"
+      content="https://jalogsdon.github.io/cosd-arcgis-thumbnail-builder/img/gallery/social_card.jpg"
     />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -59,25 +59,10 @@
         if (dark) document.documentElement.classList.add("dark-mode");
       })();
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-      integrity="sha384-5KZdSYqynSzIjQGS2M1O3HW6HVDBjfNx0v5Y2eQuE3vvQ9NTiiPK9/GWc0yYCrgw"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <!-- Vendored locally (no CDN) so the UI still works on hostile/slow WiFi -->
+    <link rel="stylesheet" href="./css/materialize.min.css" />
     <link rel="stylesheet" href="./css/materialize-colorpicker.min.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons&display=block"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="./css/fonts.css" />
     <link rel="stylesheet" href="./css/main.css" />
   </head>
 
@@ -137,7 +122,7 @@
       <h1 class="visually-hidden">Group Thumbnail Builder for ArcGIS Online</h1>
       <div class="row">
         <!-- Template rail: pick a starting point -->
-        <aside class="col s12 m3 template-rail">
+        <aside class="col s12 l3 template-rail">
           <h2 class="rail-title">Templates</h2>
           <p class="grey-text text-darken-1">
             Pick one to load it into the builder.
@@ -157,6 +142,7 @@
               <div class="card-action">
                 <a
                   href="./group.html?background=./img/background/cosd_background.jpg&logo=./img/logo/cosd_logo.png&title=San%20Diego%20Geospatial%20Services&titleColor=0,152,219,0.9"
+                  aria-label="Use this template: City of San Diego theme"
                   >Use this template</a
                 >
               </div>
@@ -175,6 +161,7 @@
               <div class="card-action">
                 <a
                   href="./group.html?background=./img/background/swd_background.jpg&logo=./img/logo/swd_logo.png&title=Stormwater%20Geospatial%20Services&titleColor=0,152,219,0.9&logoStroke=1.5"
+                  aria-label="Use this template: Stormwater Department theme"
                   >Use this template</a
                 >
               </div>
@@ -195,6 +182,7 @@
               <div class="card-action">
                 <a
                   href="./group.html?background=./img/background/tsd_background.jpg&logo=./img/logo/tsd_logo.png&title=Transportation%20Geospatial%20Services&titleColor=70,151,172,0.9&logoScale=1.4&logoStroke=1.5"
+                  aria-label="Use this template: Transportation Department theme"
                   >Use this template</a
                 >
               </div>
@@ -213,6 +201,7 @@
               <div class="card-action">
                 <a
                   href="./group.html?background=./img/background/sangis_background.jpg&logo=./img/logo/sangis_logo.png&title=SanGIS%20Geospatial%20Services&titleColor=1,131,95,0.9&logoScale=1.5&logoStroke=1.5"
+                  aria-label="Use this template: SanGIS theme"
                   >Use this template</a
                 >
               </div>
@@ -221,7 +210,7 @@
         </aside>
 
         <!-- Builder: preview beside the property grid -->
-        <div class="col s12 m9">
+        <div class="col s12 l9">
           <div class="row">
             <!-- Preview -->
             <div class="col s12 l6">
@@ -337,14 +326,13 @@
                   </div>
                   <div class="col s12 url-field">
                     <label class="color-label" for="background-url"
-                      >or paste an image URL</label
+                      >or paste a background image URL</label
                     >
                     <input
                       type="text"
                       id="background-url"
                       class="url-input"
                       placeholder="https://…"
-                      aria-label="Background image URL"
                     />
                   </div>
                 </div>
@@ -379,14 +367,13 @@
                   </div>
                   <div class="col s12 url-field">
                     <label class="color-label" for="logo-url"
-                      >or paste an image URL</label
+                      >or paste a logo image URL</label
                     >
                     <input
                       type="text"
                       id="logo-url"
                       class="url-input"
                       placeholder="https://…"
-                      aria-label="Logo image URL"
                     />
                   </div>
                 </div>
@@ -413,17 +400,9 @@
       </div>
     </footer>
 
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-      integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
-      integrity="sha384-ZOED+d9HxogEQwD+jFvux96iGQR9TxfJO+mPF2ZS0TuKH6eWrmvPsDpO6I0OWdiX"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
+    <!-- Vendored locally (no CDN) -->
+    <script src="./js/jquery-3.7.1.slim.min.js"></script>
+    <script src="./js/materialize.min.js"></script>
     <script src="./js/materialize-colorpicker.min.js"></script>
     <script src="./js/thumbnail.js"></script>
     <script src="./js/builder.js"></script>
