@@ -155,50 +155,91 @@
     ctx.globalCompositeOperation = "source-over";
   }
 
-  // Fit the whole logo inside a box (no cropping), anchored top-left, with a
-  // soft dark halo so the mark stays legible on any background without a
-  // visible plate. Drawn twice to give the halo a little more presence.
-  // `stroke` (canvas px, from the ?logoStroke= param) adds a thin white
-  // outline for marks that need extra separation from busy imagery — off by
-  // default because logos that already contain white (e.g., the City "SD")
-  // just smear into it.
+  // Opaque bounding box of a logo's artwork, so transparent padding around the
+  // mark (e.g. a logo saved on a square canvas) doesn't shove it off the
+  // top-left anchor or shrink it. Cached on the image; falls back to the full
+  // frame if the canvas is tainted (e.g. a cross-origin preview over file://).
+  function logoBBox(img) {
+    if (img._bbox) return img._bbox;
+    var full = { x: 0, y: 0, w: img.width, h: img.height };
+    var c = document.createElement("canvas");
+    c.width = img.width;
+    c.height = img.height;
+    var cx = c.getContext("2d");
+    cx.drawImage(img, 0, 0);
+    try {
+      var d = cx.getImageData(0, 0, c.width, c.height).data;
+      var minX = c.width, minY = c.height, maxX = -1, maxY = -1;
+      for (var y = 0; y < c.height; y++) {
+        for (var x = 0; x < c.width; x++) {
+          if (d[(y * c.width + x) * 4 + 3] > 8) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      img._bbox =
+        maxX >= minX
+          ? { x: minX, y: minY, w: maxX - minX + 1, h: maxY - minY + 1 }
+          : full;
+    } catch (e) {
+      img._bbox = full;
+    }
+    return img._bbox;
+  }
+
+  // Fit the whole logo inside a box (no cropping), anchored near the top-left,
+  // with a smooth halo so the mark reads on ANY background without a visible
+  // plate: a soft dark drop shadow gives depth on light/busy imagery, and a
+  // tight soft white rim lifts the mark off dark imagery. Both use gaussian
+  // shadow blur (not a hard stamped ring), so edges stay smooth. `stroke`
+  // (from ?logoStroke=) optionally thickens the white rim for especially busy
+  // backgrounds; the default already looks good, so it's rarely needed.
   function drawLogo(ctx, img, box, stroke) {
     if (!img) return;
-    var scale = Math.min(box / img.width, box / img.height);
-    var w = img.width * scale;
-    var h = img.height * scale;
-    var pad = stroke > 0 ? Math.ceil(stroke) + 1 : 0;
+    var bb = logoBBox(img);
+    var scale = Math.min(box / bb.w, box / bb.h);
+    var w = Math.max(1, Math.round(bb.w * scale));
+    var h = Math.max(1, Math.round(bb.h * scale));
 
+    // Offscreen copy of the trimmed, scaled mark with transparent padding so
+    // the shadows aren't clipped.
+    var pad = 14;
     var off = document.createElement("canvas");
-    off.width = Math.ceil(w) + pad * 2;
-    off.height = Math.ceil(h) + pad * 2;
-    var octx = off.getContext("2d");
-    if (stroke > 0) {
-      // White silhouette of the scaled logo (alpha kept, color flattened),
-      // stamped in a ring to form the outline.
-      var sil = document.createElement("canvas");
-      sil.width = off.width;
-      sil.height = off.height;
-      var sctx = sil.getContext("2d");
-      sctx.drawImage(img, pad, pad, w, h);
-      sctx.globalCompositeOperation = "source-in";
-      sctx.fillStyle = "#fff";
-      sctx.fillRect(0, 0, sil.width, sil.height);
-      for (var i = 0; i < 16; i++) {
-        var a = (Math.PI * 2 * i) / 16;
-        octx.drawImage(sil, stroke * Math.cos(a), stroke * Math.sin(a));
-      }
-    }
-    octx.drawImage(img, pad, pad, w, h);
+    off.width = w + pad * 2;
+    off.height = h + pad * 2;
+    off
+      .getContext("2d")
+      .drawImage(img, bb.x, bb.y, bb.w, bb.h, pad, pad, w, h);
 
+    var dx = 8 - pad;
+    var dy = 8 - pad;
+
+    // 1. Outer soft dark shadow (depth on light / busy backgrounds).
     ctx.save();
-    ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
-    ctx.shadowBlur = 5;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 1;
+    ctx.drawImage(off, dx, dy);
+    ctx.restore();
+
+    // 2. Tight soft white rim (separation on dark backgrounds). A few low-blur
+    // passes build a smooth glow that hugs the mark's edge.
+    var rim = stroke > 0 ? stroke : 0;
+    ctx.save();
+    ctx.shadowColor = "rgba(255, 255, 255, 0.9)";
+    ctx.shadowBlur = 2.5 + rim;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
-    ctx.drawImage(off, 8 - pad, 8 - pad);
-    ctx.drawImage(off, 8 - pad, 8 - pad);
+    var passes = 3 + Math.round(rim);
+    for (var i = 0; i < passes; i++) ctx.drawImage(off, dx, dy);
     ctx.restore();
+
+    // 3. Crisp mark on top.
+    ctx.drawImage(off, dx, dy);
   }
 
   var ITEM_TITLE = {
