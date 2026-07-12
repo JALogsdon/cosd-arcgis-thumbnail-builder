@@ -253,11 +253,15 @@
     var od = octx.createImageData(W, H);
     var o = od.data;
     for (var p = 0; p < N; p++) {
-      if (alpha[p * 4 + 3] > 20 || reach[p] === 0) {
+      var ma = alpha[p * 4 + 3];
+      // Keep the mark's own anti-aliased alpha on the outer edge (so the rim
+      // stays smooth, not jagged), and fill enclosed holes solid.
+      var a = ma <= 20 && reach[p] === 0 ? 255 : ma;
+      if (a > 0) {
         o[p * 4] = 255;
         o[p * 4 + 1] = 255;
         o[p * 4 + 2] = 255;
-        o[p * 4 + 3] = 255;
+        o[p * 4 + 3] = a;
       }
     }
     octx.putImageData(od, 0, 0);
@@ -293,7 +297,10 @@
     var H = h + pad * 2;
 
     var mark = newCanvas(W, H);
-    mark.getContext("2d").drawImage(img, bb.x, bb.y, bb.w, bb.h, pad, pad, w, h);
+    var mctx = mark.getContext("2d");
+    mctx.imageSmoothingEnabled = true;
+    mctx.imageSmoothingQuality = "high";
+    mctx.drawImage(img, bb.x, bb.y, bb.w, bb.h, pad, pad, w, h);
     var filled = outerFilled(mark, W, H);
 
     var sprite = newCanvas(W, H);
