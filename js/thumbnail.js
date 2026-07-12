@@ -191,18 +191,18 @@
   }
 
   // --- Logo halo -------------------------------------------------------
-  // The mark reads on ANY background without a visible plate: a soft dark drop
-  // shadow gives depth on light/busy imagery, and a soft white rim lifts it off
-  // dark imagery. The rim is built from the mark's OUTER silhouette (internal
-  // holes filled first), so a logo with negative space — letter counters, a
-  // ring, a seal — shows the background through those gaps instead of a white
-  // glow. The crisp mark is stamped exactly once so its anti-aliased edges stay
-  // soft. `stroke` (from ?logoStroke=) thickens the white rim for busy imagery.
+  // The mark reads on any background without a visible plate: a soft dark drop
+  // shadow gives depth on light/busy imagery; templates that set ?logoStroke=
+  // also get a soft white rim to lift the mark off dark imagery. The rim is
+  // built from the mark's OUTER silhouette (internal holes filled first) so
+  // negative space — letter counters, a ring, a seal — shows the background
+  // through it instead of a white glow.
   //
-  // The composited sprite is cached per (logo, box, stroke): draw() runs on
-  // every keystroke but the logo art doesn't change, so this stays one blit per
-  // frame.
-  var logoSpriteCache = {};
+  // Crucially the LOGO itself is drawn straight onto the canvas each frame
+  // (one high-quality drawImage), never through an intermediate sprite — that
+  // extra copy was softening/roughening the edges. Only the rim is a cached
+  // offscreen layer, drawn behind the logo.
+  var rimCache = {};
   var logoIdSeq = 0;
 
   function newCanvas(w, h) {
@@ -285,16 +285,12 @@
     return c;
   }
 
-  function buildLogoSprite(img, bb, box, stroke) {
-    var scale = Math.min(box / bb.w, box / bb.h);
-    var w = Math.max(1, Math.round(bb.w * scale));
-    var h = Math.max(1, Math.round(bb.h * scale));
-    // A white rim is opt-in (templates set ?logoStroke= for busy backgrounds);
-    // there is no default outline.
-    var rim = stroke > 0 ? stroke : 0;
-    var whiteBlur = 2.5 + rim;
-    var darkBlur = 6;
-    var pad = Math.ceil(Math.max(rim > 0 ? whiteBlur : 0, darkBlur)) + 4;
+  // Cached white outer-rim layer for a scaled logo (only used when stroke > 0).
+  function getRimSprite(img, bb, w, h, stroke) {
+    var key = img._logoId + "|" + w + "|" + h + "|" + stroke;
+    if (rimCache[key]) return rimCache[key];
+    var whiteBlur = 2.5 + stroke;
+    var pad = Math.ceil(whiteBlur) + 4;
     var W = w + pad * 2;
     var H = h + pad * 2;
 
@@ -305,35 +301,53 @@
     mctx.drawImage(img, bb.x, bb.y, bb.w, bb.h, pad, pad, w, h);
     var filled = outerFilled(mark, W, H);
 
-    var sprite = newCanvas(W, H);
-    var s = sprite.getContext("2d");
-    // 1. soft dark drop shadow, outside the mark only (always)
-    s.globalAlpha = 0.45;
-    s.drawImage(glowBand(filled, filled, darkBlur, "rgba(0,0,0,1)", 1, W, H), 0, 0);
-    s.globalAlpha = 1;
-    // 2. soft white rim, outside the mark only — ONLY when an outline was asked
-    // for (two passes for presence)
-    if (rim > 0) {
-      s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
-      s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
-    }
-    // 3. crisp mark, stamped once so its AA edges survive
-    s.drawImage(mark, 0, 0);
+    // White glow of the outer silhouette, with the inside erased so only the
+    // rim band remains (two passes for presence).
+    var rim = newCanvas(W, H);
+    var r = rim.getContext("2d");
+    r.shadowColor = "rgba(255,255,255,1)";
+    r.shadowBlur = whiteBlur;
+    r.shadowOffsetX = W + 400;
+    r.drawImage(filled, -(W + 400), 0);
+    r.drawImage(filled, -(W + 400), 0);
+    r.shadowColor = "transparent";
+    r.globalCompositeOperation = "destination-out";
+    r.drawImage(filled, 0, 0);
 
-    return { canvas: sprite, pad: pad };
+    var out = { canvas: rim, pad: pad };
+    rimCache[key] = out;
+    return out;
   }
 
   // Fit the whole logo inside a box (no cropping), anchored near the top-left.
   function drawLogo(ctx, img, box, stroke) {
     if (!img) return;
     if (!img._logoId) img._logoId = ++logoIdSeq;
-    var key = img._logoId + "|" + box + "|" + (stroke || 0);
-    var sprite = logoSpriteCache[key];
-    if (!sprite) {
-      sprite = buildLogoSprite(img, logoBBox(img), box, stroke);
-      logoSpriteCache[key] = sprite;
+    var bb = logoBBox(img);
+    var scale = Math.min(box / bb.w, box / bb.h);
+    var w = Math.max(1, Math.round(bb.w * scale));
+    var h = Math.max(1, Math.round(bb.h * scale));
+    var x = 8;
+    var y = 8;
+
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    if (stroke > 0) {
+      // White rim behind, then the crisp logo on top (the rim already
+      // separates it, so no dark shadow to muddy the rim).
+      var r = getRimSprite(img, bb, w, h, stroke);
+      ctx.drawImage(r.canvas, x - r.pad, y - r.pad);
+      ctx.drawImage(img, bb.x, bb.y, bb.w, bb.h, x, y, w, h);
+    } else {
+      // Crisp logo with a soft dark drop shadow for depth on light/busy imagery.
+      ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+      ctx.shadowBlur = 5;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 1;
+      ctx.drawImage(img, bb.x, bb.y, bb.w, bb.h, x, y, w, h);
     }
-    ctx.drawImage(sprite.canvas, 8 - sprite.pad, 8 - sprite.pad);
+    ctx.restore();
   }
 
   var ITEM_TITLE = {
@@ -415,7 +429,14 @@
   }
 
   function renderPreview(canvas, cfg) {
+    // Supersample the card canvas to the display density (capped 2x) so the
+    // small previews stay crisp on high-DPI screens; paint keeps working in the
+    // canvas's logical (600x400 / 400x400) coordinates.
+    var SS = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
+    canvas.width = canvas.width * SS;
+    canvas.height = canvas.height * SS;
     var ctx = canvas.getContext("2d");
+    ctx.scale(SS, SS);
     Promise.all([loadImage(cfg.background), loadImage(cfg.logo)]).then(
       function (imgs) {
         cfg.bgImage = imgs[0];

@@ -14,9 +14,19 @@
   if (!canvas) {
     throw new Error("builder.js loaded on a page without a builder canvas");
   }
-  canvas.width = isGroup ? 400 : 600;
-  canvas.height = 400;
+  // Logical output size (what the downloaded PNG is).
+  var OUT_W = isGroup ? 400 : 600;
+  var OUT_H = 400;
+  // Render the on-screen canvas at the display's pixel density (supersampled,
+  // capped at 2x) so the preview stays crisp on high-DPI/Retina screens; the
+  // download is still exported at the exact 600x400 / 400x400 output size. All
+  // paint code keeps working in logical coordinates because the context is
+  // scaled by SS.
+  var SS = Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
+  canvas.width = OUT_W * SS;
+  canvas.height = OUT_H * SS;
   var ctx = canvas.getContext("2d");
+  ctx.scale(SS, SS);
   var paint = isGroup ? Thumb.paintGroup : Thumb.paintItem;
   var downloadSuffix = isGroup ? "group-thumbnail" : "thumbnail";
 
@@ -279,7 +289,7 @@
       .querySelector("#download-image")
       .addEventListener("click", function (e) {
         try {
-          this.href = canvas.toDataURL("image/png");
+          this.href = exportPng();
           this.download = downloadName(downloadSuffix);
         } catch (err) {
           // A cross-origin background/logo without CORS headers taints the
@@ -557,6 +567,20 @@
       .replace(/_+/g, "_")
       .replace(/^_+|_+$/g, "");
     return (safe ? safe + "_" : "") + suffix + ".png";
+  }
+
+  // Export at the exact logical output size. The canvas backing is supersampled
+  // for display, so downscale it back to OUT_W x OUT_H for the PNG.
+  function exportPng() {
+    if (SS === 1) return canvas.toDataURL("image/png");
+    var out = document.createElement("canvas");
+    out.width = OUT_W;
+    out.height = OUT_H;
+    var octx = out.getContext("2d");
+    octx.imageSmoothingEnabled = true;
+    octx.imageSmoothingQuality = "high";
+    octx.drawImage(canvas, 0, 0, OUT_W, OUT_H);
+    return out.toDataURL("image/png");
   }
 
   function buildShareUrl() {
