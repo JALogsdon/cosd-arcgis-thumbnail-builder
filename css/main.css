@@ -143,28 +143,7 @@ main.container {
   aspect-ratio: 1 / 1;
 }
 
-/* Keep the preview visible while adjusting controls. On desktop the two builder
-   columns are made equal height (flex) so the shorter one has room, and the
-   preview + action buttons stick just below the nav. So changing a color,
-   category, or logo slider updates a preview you can still see, instead of
-   forcing a scroll down to the control and back up to the result. */
-@media (min-width: 993px) {
-  .builder-split {
-    display: flex;
-    align-items: stretch;
-  }
-  .preview-pane {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    /* Opaque, with a clean bottom edge, so the controls scrolling underneath
-       are hidden and the pinned preview reads as a fixed toolbar */
-    background: var(--bg);
-    padding: 12px 0;
-    border-bottom: 1px solid var(--surface);
-    box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.45);
-  }
-}
+/* Template rail: a sticky panel whose heading stays put while cards scroll */
 .template-rail {
   position: sticky;
   top: 80px;

@@ -214,13 +214,11 @@
 
         <!-- Builder: preview + image uploads on the left, title/sidebar on the right -->
         <div class="col s12 l9">
-          <div class="row builder-split">
+          <div class="row">
             <!-- Preview + image uploads -->
             <div class="col s12 l6">
-              <!-- Preview stays pinned while you scroll the controls -->
-              <div class="preview-pane">
-                <div class="row">
-                  <!-- Accessible thumbnail preview -->
+              <div class="row">
+                <!-- Accessible thumbnail preview -->
                 <canvas
                   id="edit-canvas"
                   role="img"
@@ -258,8 +256,6 @@
                   <i class="material-icons left">refresh</i>Reset
                 </button>
               </div>
-              </div>
-              <!-- /preview-pane -->
 
               <div class="row">
                 <h2>Background Image</h2>
@@ -351,21 +347,6 @@
                       max="2"
                       step="0.05"
                       value="1"
-                    />
-                  </p>
-                </div>
-                <div class="col s12 slider-field">
-                  <label class="color-label" for="logo-stroke"
-                    >White outline <span id="logo-stroke-val">off</span></label
-                  >
-                  <p class="range-field">
-                    <input
-                      type="range"
-                      id="logo-stroke"
-                      min="0"
-                      max="3"
-                      step="0.5"
-                      value="0"
                     />
                   </p>
                 </div>

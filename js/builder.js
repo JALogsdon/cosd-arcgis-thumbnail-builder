@@ -41,10 +41,16 @@
   // newer image. The visible URL field is the single source of truth for what
   // Copy link serializes — uploads clear it (a local file can't travel in a
   // URL), so the shared link never points at an image the sharer replaced.
+  // slot.url is the image URL that Copy link serializes (empty = omit, so the
+  // recipient falls back to the brand default). It's tracked separately from
+  // the visible urlEl field, which only shows a URL the user actually typed —
+  // built-in template/asset paths (./img/...) drive the image but stay hidden
+  // so the field doesn't read like an internal path.
   var slots = {
     background: {
       img: null,
       seq: 0,
+      url: "",
       fileEl: document.querySelector("#background"),
       urlEl: document.querySelector("#background-url"),
       pathEl: null,
@@ -53,12 +59,19 @@
     logo: {
       img: null,
       seq: 0,
+      url: "",
       fileEl: document.querySelector("#logo"),
       urlEl: document.querySelector("#logo-url"),
       pathEl: null,
       defaultUrl: DEFAULTS.logo,
     },
   };
+
+  // A URL worth showing in the visible field: an absolute one the user would
+  // recognize and might edit. Relative asset paths stay hidden.
+  function isDisplayableUrl(u) {
+    return /^https?:\/\//i.test(u || "");
+  }
   // Materialize renders a read-only ".file-path" text box next to each file
   // button; find the one that belongs to each slot so we can clear it on reset.
   Object.keys(slots).forEach(function (name) {
@@ -140,9 +153,9 @@
     var slot = slots[name];
     var token = ++slot.seq;
     slot.fromUpload = true; // a local file, which can't travel in a share link
-    // A local file can't be represented as a shareable URL; clear the URL field
-    // now (not after decode) so Copy link stays honest the instant a file is
-    // chosen, regardless of how long the image takes to load.
+    // A local file can't be represented as a shareable URL; clear the URL now
+    // (not after decode) so Copy link stays honest the instant a file is chosen.
+    slot.url = "";
     if (slot.urlEl) slot.urlEl.value = "";
     var reader = new FileReader();
     reader.onload = function () {
@@ -214,6 +227,7 @@
             slot.fileEl.value = "";
             if (slot.pathEl) slot.pathEl.value = "";
           }
+          slot.url = v; // the user typed it, so it's what Copy link shares
           if (v) loadFromUrl(name, v);
           else clearImage(name);
         }
@@ -325,6 +339,7 @@
           var slot = slots[name];
           if (slot.fileEl) slot.fileEl.value = "";
           if (slot.pathEl) slot.pathEl.value = "";
+          slot.url = "";
           slot.urlEl.value = "";
           loadFromUrl(name, slot.defaultUrl); // silent brand default
         });
@@ -334,16 +349,19 @@
     }
   });
 
-  // Load a slot's initial image: an explicit ?param wins and is shown in the
-  // field (so it travels in a shared link); otherwise the brand default loads
-  // silently with the field left empty.
+  // Load a slot's initial image: an explicit ?param drives the image and is
+  // remembered for Copy link, but only shown in the field if it's a real URL
+  // (not a built-in ./img/... asset path); otherwise the brand default loads
+  // silently with the field left empty and nothing to serialize.
   function initSlot(name) {
     var slot = slots[name];
     var p = param(name); // "background" / "logo"
     if (p != null) {
-      slot.urlEl.value = p;
+      slot.url = p;
+      slot.urlEl.value = isDisplayableUrl(p) ? p : "";
       loadFromUrl(name, p);
     } else {
+      slot.url = "";
       slot.urlEl.value = "";
       loadFromUrl(name, slot.defaultUrl);
     }
@@ -414,9 +432,9 @@
     });
   }
 
-  // Logo size / white-outline sliders. These drive the same logoScale /
-  // logoStroke that templates set via the query string, so they round-trip
-  // through Copy link; the defaults (1x, no outline) already look good.
+  // Logo size slider. Drives the same logoScale that templates set via the
+  // query string, so it round-trips through Copy link. (logoStroke has no UI
+  // control; templates opt into a white outline via ?logoStroke=.)
   function setupLogoSliders() {
     var scaleEl = document.querySelector("#logo-scale");
     if (!scaleEl) return;
@@ -425,28 +443,16 @@
       syncLogoSliders();
       draw();
     });
-    var strokeEl = document.querySelector("#logo-stroke");
-    if (strokeEl) {
-      strokeEl.addEventListener("input", function () {
-        logoStroke = parseFloat(this.value) || 0;
-        syncLogoSliders();
-        draw();
-      });
-    }
   }
 
-  // Push the current logoScale/logoStroke onto the sliders and their value
-  // labels (used on init, when a template sets them, and on Reset).
+  // Push the current logoScale onto the slider and its value label (used on
+  // init, when a template sets it, and on Reset).
   function syncLogoSliders() {
     var scaleEl = document.querySelector("#logo-scale");
     if (!scaleEl) return;
     scaleEl.value = logoScale;
     var sv = document.querySelector("#logo-scale-val");
     if (sv) sv.textContent = Math.round(logoScale * 100) + "%";
-    var strokeEl = document.querySelector("#logo-stroke");
-    if (strokeEl) strokeEl.value = logoStroke;
-    var tv = document.querySelector("#logo-stroke-val");
-    if (tv) tv.textContent = logoStroke > 0 ? logoStroke + " px" : "off";
   }
 
   // Toggle "more above / more below" cues on the rail so a first-time visitor
@@ -567,9 +573,9 @@
       if (category) params.set("category", category);
     }
 
-    var bgUrl = slots.background.urlEl.value.trim();
+    var bgUrl = (slots.background.url || "").trim();
     if (bgUrl) params.set("background", bgUrl);
-    var logoUrl = slots.logo.urlEl.value.trim();
+    var logoUrl = (slots.logo.url || "").trim();
     if (logoUrl) params.set("logo", logoUrl);
     if (logoScale !== 1) params.set("logoScale", logoScale);
     if (logoStroke !== 0) params.set("logoStroke", logoStroke);

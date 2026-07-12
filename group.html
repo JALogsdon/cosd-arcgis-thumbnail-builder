@@ -211,13 +211,11 @@
 
         <!-- Builder: preview beside the property grid -->
         <div class="col s12 l9">
-          <div class="row builder-split">
+          <div class="row">
             <!-- Preview -->
             <div class="col s12 l6">
-              <!-- Preview stays pinned while you scroll the controls -->
-              <div class="preview-pane">
-                <div class="row">
-                  <canvas
+              <div class="row">
+                <canvas
                   id="group-canvas"
                   role="img"
                   aria-label="Live preview of your group thumbnail (400 x 400 pixels)"
@@ -253,8 +251,6 @@
                   <i class="material-icons left">refresh</i>Reset
                 </button>
               </div>
-              </div>
-              <!-- /preview-pane -->
             </div>
 
             <!-- Properties -->
@@ -392,21 +388,6 @@
                         max="2"
                         step="0.05"
                         value="1"
-                      />
-                    </p>
-                  </div>
-                  <div class="col s12 slider-field">
-                    <label class="color-label" for="logo-stroke"
-                      >White outline <span id="logo-stroke-val">off</span></label
-                    >
-                    <p class="range-field">
-                      <input
-                        type="range"
-                        id="logo-stroke"
-                        min="0"
-                        max="3"
-                        step="0.5"
-                        value="0"
                       />
                     </p>
                   </div>

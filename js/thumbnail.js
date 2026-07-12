@@ -289,10 +289,12 @@
     var scale = Math.min(box / bb.w, box / bb.h);
     var w = Math.max(1, Math.round(bb.w * scale));
     var h = Math.max(1, Math.round(bb.h * scale));
+    // A white rim is opt-in (templates set ?logoStroke= for busy backgrounds);
+    // there is no default outline.
     var rim = stroke > 0 ? stroke : 0;
     var whiteBlur = 2.5 + rim;
     var darkBlur = 6;
-    var pad = Math.ceil(Math.max(whiteBlur, darkBlur)) + 4;
+    var pad = Math.ceil(Math.max(rim > 0 ? whiteBlur : 0, darkBlur)) + 4;
     var W = w + pad * 2;
     var H = h + pad * 2;
 
@@ -305,13 +307,16 @@
 
     var sprite = newCanvas(W, H);
     var s = sprite.getContext("2d");
-    // 1. soft dark drop shadow, outside the mark only
+    // 1. soft dark drop shadow, outside the mark only (always)
     s.globalAlpha = 0.45;
     s.drawImage(glowBand(filled, filled, darkBlur, "rgba(0,0,0,1)", 1, W, H), 0, 0);
     s.globalAlpha = 1;
-    // 2. soft white rim, outside the mark only (two passes for presence)
-    s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
-    s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
+    // 2. soft white rim, outside the mark only — ONLY when an outline was asked
+    // for (two passes for presence)
+    if (rim > 0) {
+      s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
+      s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
+    }
     // 3. crisp mark, stamped once so its AA edges survive
     s.drawImage(mark, 0, 0);
 
