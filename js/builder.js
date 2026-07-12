@@ -119,6 +119,7 @@
   function loadFromUrl(name, url) {
     var slot = slots[name];
     var token = ++slot.seq;
+    slot.fromUpload = false; // a URL (default, template, or pasted), not a file
     var img = new Image();
     if (isCrossOrigin(url)) img.crossOrigin = "Anonymous";
     img.onload = function () {
@@ -138,6 +139,7 @@
   function loadFromFile(name, file) {
     var slot = slots[name];
     var token = ++slot.seq;
+    slot.fromUpload = true; // a local file, which can't travel in a share link
     // A local file can't be represented as a shareable URL; clear the URL field
     // now (not after decode) so Copy link stays honest the instant a file is
     // chosen, regardless of how long the image takes to load.
@@ -200,16 +202,30 @@
           if (this.files && this.files[0]) loadFromFile(name, this.files[0]);
         });
       }
-      // Visible "or paste an image URL" field
+      // Visible "or paste an image URL" field. Commit on change (blur/Enter)
+      // AND live on input, so a pasted or typed URL renders without waiting for
+      // focus to leave. The input path is debounced and only fires once the
+      // value looks like a URL, so partial typing doesn't spam error toasts.
       if (slot.urlEl) {
-        slot.urlEl.addEventListener("change", function () {
-          var v = this.value.trim();
+        var deb;
+        function commitUrl() {
+          var v = slot.urlEl.value.trim();
           if (slot.fileEl) {
             slot.fileEl.value = "";
             if (slot.pathEl) slot.pathEl.value = "";
           }
           if (v) loadFromUrl(name, v);
           else clearImage(name);
+        }
+        slot.urlEl.addEventListener("change", function () {
+          clearTimeout(deb);
+          commitUrl();
+        });
+        slot.urlEl.addEventListener("input", function () {
+          clearTimeout(deb);
+          var v = this.value.trim();
+          if (v && !/^(https?:\/\/|\.?\/|data:)/i.test(v)) return; // not URL-ish yet
+          deb = setTimeout(commitUrl, 500);
         });
       }
     });
@@ -265,9 +281,9 @@
     if (copyBtn) {
       copyBtn.addEventListener("click", function () {
         var url = buildShareUrl();
-        var uploaded =
-          (slots.background.img && !slots.background.urlEl.value.trim()) ||
-          (slots.logo.img && !slots.logo.urlEl.value.trim());
+        // Only warn about a real file upload, not the brand defaults (which
+        // also leave the URL field empty but reproduce fine from a bare link).
+        var uploaded = slots.background.fromUpload || slots.logo.fromUpload;
         var note = uploaded
           ? " (uploaded images can't travel in a link — only text, colors, and image URLs were included)"
           : "";

@@ -25,13 +25,20 @@ document.addEventListener("DOMContentLoaded", function () {
   } catch (e) {}
   if (urlTheme === "dark" || urlTheme === "light") saveTheme(dark);
 
+  function toggleTheme(e) {
+    e.preventDefault();
+    var nowDark = root.classList.toggle("dark-mode");
+    saveTheme(nowDark);
+    updateIcons(nowDark);
+    syncThemeLinks(nowDark);
+  }
+
   toggles.forEach(function (btn) {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      var nowDark = root.classList.toggle("dark-mode");
-      saveTheme(nowDark);
-      updateIcons(nowDark);
-      syncThemeLinks(nowDark);
+    btn.addEventListener("click", toggleTheme);
+    // The toggle is an <a role="button">; native links activate on Enter but
+    // not Space. role=button promises Space works, so handle it here.
+    btn.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Spacebar") toggleTheme(e);
     });
   });
 
