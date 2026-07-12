@@ -190,56 +190,138 @@
     return img._bbox;
   }
 
-  // Fit the whole logo inside a box (no cropping), anchored near the top-left,
-  // with a smooth halo so the mark reads on ANY background without a visible
-  // plate: a soft dark drop shadow gives depth on light/busy imagery, and a
-  // tight soft white rim lifts the mark off dark imagery. Both use gaussian
-  // shadow blur (not a hard stamped ring), so edges stay smooth. `stroke`
-  // (from ?logoStroke=) optionally thickens the white rim for especially busy
-  // backgrounds; the default already looks good, so it's rarely needed.
-  function drawLogo(ctx, img, box, stroke) {
-    if (!img) return;
-    var bb = logoBBox(img);
+  // --- Logo halo -------------------------------------------------------
+  // The mark reads on ANY background without a visible plate: a soft dark drop
+  // shadow gives depth on light/busy imagery, and a soft white rim lifts it off
+  // dark imagery. The rim is built from the mark's OUTER silhouette (internal
+  // holes filled first), so a logo with negative space — letter counters, a
+  // ring, a seal — shows the background through those gaps instead of a white
+  // glow. The crisp mark is stamped exactly once so its anti-aliased edges stay
+  // soft. `stroke` (from ?logoStroke=) thickens the white rim for busy imagery.
+  //
+  // The composited sprite is cached per (logo, box, stroke): draw() runs on
+  // every keystroke but the logo art doesn't change, so this stays one blit per
+  // frame.
+  var logoSpriteCache = {};
+  var logoIdSeq = 0;
+
+  function newCanvas(w, h) {
+    var c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    return c;
+  }
+
+  // White copy of the mark's silhouette with internal holes filled, so a rim
+  // built from it only surrounds the outer contour. A hole is a transparent
+  // pixel a flood fill from the border can't reach.
+  function outerFilled(mark, W, H) {
+    var alpha;
+    try {
+      alpha = mark.getContext("2d").getImageData(0, 0, W, H).data;
+    } catch (e) {
+      return mark; // tainted (file://): fall back to the mark, holes and all
+    }
+    var N = W * H;
+    var reach = new Uint8Array(N);
+    var stack = [];
+    function consider(i) {
+      if (i < 0 || i >= N || reach[i] || alpha[i * 4 + 3] > 20) return;
+      reach[i] = 1;
+      stack.push(i);
+    }
+    var x, y;
+    for (x = 0; x < W; x++) {
+      consider(x);
+      consider((H - 1) * W + x);
+    }
+    for (y = 0; y < H; y++) {
+      consider(y * W);
+      consider(y * W + W - 1);
+    }
+    while (stack.length) {
+      var i = stack.pop();
+      x = i % W;
+      y = (i - x) / W;
+      if (x > 0) consider(i - 1);
+      if (x < W - 1) consider(i + 1);
+      if (y > 0) consider(i - W);
+      if (y < H - 1) consider(i + W);
+    }
+    var out = newCanvas(W, H);
+    var octx = out.getContext("2d");
+    var od = octx.createImageData(W, H);
+    var o = od.data;
+    for (var p = 0; p < N; p++) {
+      if (alpha[p * 4 + 3] > 20 || reach[p] === 0) {
+        o[p * 4] = 255;
+        o[p * 4 + 1] = 255;
+        o[p * 4 + 2] = 255;
+        o[p * 4 + 3] = 255;
+      }
+    }
+    octx.putImageData(od, 0, 0);
+    return out;
+  }
+
+  // Blurred single-color glow of `src` with NO source pixels (drawn far
+  // off-canvas so only its shadow lands), erased inside `clip` so the glow only
+  // surrounds the outer contour.
+  function glowBand(src, clip, blur, color, offsetY, W, H) {
+    var c = newCanvas(W, H);
+    var g = c.getContext("2d");
+    g.shadowColor = color;
+    g.shadowBlur = blur;
+    g.shadowOffsetX = W + 400;
+    g.shadowOffsetY = offsetY || 0;
+    g.drawImage(src, -(W + 400), 0);
+    g.shadowColor = "transparent";
+    g.globalCompositeOperation = "destination-out";
+    g.drawImage(clip, 0, 0);
+    return c;
+  }
+
+  function buildLogoSprite(img, bb, box, stroke) {
     var scale = Math.min(box / bb.w, box / bb.h);
     var w = Math.max(1, Math.round(bb.w * scale));
     var h = Math.max(1, Math.round(bb.h * scale));
-
-    // Offscreen copy of the trimmed, scaled mark with transparent padding so
-    // the shadows aren't clipped.
-    var pad = 14;
-    var off = document.createElement("canvas");
-    off.width = w + pad * 2;
-    off.height = h + pad * 2;
-    off
-      .getContext("2d")
-      .drawImage(img, bb.x, bb.y, bb.w, bb.h, pad, pad, w, h);
-
-    var dx = 8 - pad;
-    var dy = 8 - pad;
-
-    // 1. Outer soft dark shadow (depth on light / busy backgrounds).
-    ctx.save();
-    ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
-    ctx.shadowBlur = 6;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 1;
-    ctx.drawImage(off, dx, dy);
-    ctx.restore();
-
-    // 2. Tight soft white rim (separation on dark backgrounds). A few low-blur
-    // passes build a smooth glow that hugs the mark's edge.
     var rim = stroke > 0 ? stroke : 0;
-    ctx.save();
-    ctx.shadowColor = "rgba(255, 255, 255, 0.9)";
-    ctx.shadowBlur = 2.5 + rim;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    var passes = 3 + Math.round(rim);
-    for (var i = 0; i < passes; i++) ctx.drawImage(off, dx, dy);
-    ctx.restore();
+    var whiteBlur = 2.5 + rim;
+    var darkBlur = 6;
+    var pad = Math.ceil(Math.max(whiteBlur, darkBlur)) + 4;
+    var W = w + pad * 2;
+    var H = h + pad * 2;
 
-    // 3. Crisp mark on top.
-    ctx.drawImage(off, dx, dy);
+    var mark = newCanvas(W, H);
+    mark.getContext("2d").drawImage(img, bb.x, bb.y, bb.w, bb.h, pad, pad, w, h);
+    var filled = outerFilled(mark, W, H);
+
+    var sprite = newCanvas(W, H);
+    var s = sprite.getContext("2d");
+    // 1. soft dark drop shadow, outside the mark only
+    s.globalAlpha = 0.45;
+    s.drawImage(glowBand(filled, filled, darkBlur, "rgba(0,0,0,1)", 1, W, H), 0, 0);
+    s.globalAlpha = 1;
+    // 2. soft white rim, outside the mark only (two passes for presence)
+    s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
+    s.drawImage(glowBand(filled, filled, whiteBlur, "rgba(255,255,255,1)", 0, W, H), 0, 0);
+    // 3. crisp mark, stamped once so its AA edges survive
+    s.drawImage(mark, 0, 0);
+
+    return { canvas: sprite, pad: pad };
+  }
+
+  // Fit the whole logo inside a box (no cropping), anchored near the top-left.
+  function drawLogo(ctx, img, box, stroke) {
+    if (!img) return;
+    if (!img._logoId) img._logoId = ++logoIdSeq;
+    var key = img._logoId + "|" + box + "|" + (stroke || 0);
+    var sprite = logoSpriteCache[key];
+    if (!sprite) {
+      sprite = buildLogoSprite(img, logoBBox(img), box, stroke);
+      logoSpriteCache[key] = sprite;
+    }
+    ctx.drawImage(sprite.canvas, 8 - sprite.pad, 8 - sprite.pad);
   }
 
   var ITEM_TITLE = {
