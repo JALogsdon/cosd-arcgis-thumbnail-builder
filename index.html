@@ -214,11 +214,13 @@
 
         <!-- Builder: preview + image uploads on the left, title/sidebar on the right -->
         <div class="col s12 l9">
-          <div class="row">
+          <div class="row builder-split">
             <!-- Preview + image uploads -->
             <div class="col s12 l6">
-              <div class="row">
-                <!-- Accessible thumbnail preview -->
+              <!-- Preview stays pinned while you scroll the controls -->
+              <div class="preview-pane">
+                <div class="row">
+                  <!-- Accessible thumbnail preview -->
                 <canvas
                   id="edit-canvas"
                   role="img"
@@ -256,6 +258,8 @@
                   <i class="material-icons left">refresh</i>Reset
                 </button>
               </div>
+              </div>
+              <!-- /preview-pane -->
 
               <div class="row">
                 <h2>Background Image</h2>

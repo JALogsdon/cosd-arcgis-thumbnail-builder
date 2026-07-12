@@ -211,11 +211,13 @@
 
         <!-- Builder: preview beside the property grid -->
         <div class="col s12 l9">
-          <div class="row">
+          <div class="row builder-split">
             <!-- Preview -->
             <div class="col s12 l6">
-              <div class="row">
-                <canvas
+              <!-- Preview stays pinned while you scroll the controls -->
+              <div class="preview-pane">
+                <div class="row">
+                  <canvas
                   id="group-canvas"
                   role="img"
                   aria-label="Live preview of your group thumbnail (400 x 400 pixels)"
@@ -251,6 +253,8 @@
                   <i class="material-icons left">refresh</i>Reset
                 </button>
               </div>
+              </div>
+              <!-- /preview-pane -->
             </div>
 
             <!-- Properties -->
