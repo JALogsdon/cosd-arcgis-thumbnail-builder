@@ -464,6 +464,28 @@ select:focus {
   width: 100%;
 }
 
+/* Logo size / outline sliders */
+.slider-field {
+  margin-top: 6px;
+}
+.slider-field .range-field {
+  margin: 0 0 6px;
+}
+.slider-field .color-label span {
+  font-weight: 400;
+  color: var(--muted);
+}
+/* On-brand range thumb in both themes (Materialize defaults to teal) */
+input[type="range"]::-webkit-slider-thumb {
+  background-color: var(--accent);
+}
+input[type="range"]::-moz-range-thumb {
+  background-color: var(--accent);
+}
+.range-field .thumb {
+  background-color: var(--accent);
+}
+
 /* Drop-target cue when dragging an image over the preview column */
 .drag-over {
   outline: 2px dashed var(--primary);

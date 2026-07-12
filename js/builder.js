@@ -237,10 +237,12 @@
     // Whole template card is clickable, and up/down cues show scroll room.
     setupTemplateCards();
     setupRailScrollIndicators();
+    setupLogoSliders();
 
     // ---- Query params ----
     logoScale = parseFloat(param("logoScale")) || 1;
     logoStroke = parseFloat(param("logoStroke")) || 0;
+    syncLogoSliders();
 
     setColor("#title-color", param("titleColor"), "rgba(0,152,219,0.9)"); // cerulean
     if (!isGroup) {
@@ -318,6 +320,7 @@
           $("#category-color").colorpicker("setValue", "rgba(255,160,47,0.9)");
         logoScale = 1;
         logoStroke = 0;
+        syncLogoSliders();
         Object.keys(slots).forEach(function (name) {
           var slot = slots[name];
           if (slot.fileEl) slot.fileEl.value = "";
@@ -409,6 +412,41 @@
         window.location.href = a.href;
       });
     });
+  }
+
+  // Logo size / white-outline sliders. These drive the same logoScale /
+  // logoStroke that templates set via the query string, so they round-trip
+  // through Copy link; the defaults (1x, no outline) already look good.
+  function setupLogoSliders() {
+    var scaleEl = document.querySelector("#logo-scale");
+    if (!scaleEl) return;
+    scaleEl.addEventListener("input", function () {
+      logoScale = parseFloat(this.value) || 1;
+      syncLogoSliders();
+      draw();
+    });
+    var strokeEl = document.querySelector("#logo-stroke");
+    if (strokeEl) {
+      strokeEl.addEventListener("input", function () {
+        logoStroke = parseFloat(this.value) || 0;
+        syncLogoSliders();
+        draw();
+      });
+    }
+  }
+
+  // Push the current logoScale/logoStroke onto the sliders and their value
+  // labels (used on init, when a template sets them, and on Reset).
+  function syncLogoSliders() {
+    var scaleEl = document.querySelector("#logo-scale");
+    if (!scaleEl) return;
+    scaleEl.value = logoScale;
+    var sv = document.querySelector("#logo-scale-val");
+    if (sv) sv.textContent = Math.round(logoScale * 100) + "%";
+    var strokeEl = document.querySelector("#logo-stroke");
+    if (strokeEl) strokeEl.value = logoStroke;
+    var tv = document.querySelector("#logo-stroke-val");
+    if (tv) tv.textContent = logoStroke > 0 ? logoStroke + " px" : "off";
   }
 
   // Toggle "more above / more below" cues on the rail so a first-time visitor
